@@ -1,0 +1,66 @@
+* Emacs.d
+
+This is my emacs config forks from purcell's [[http://github.com/purcell/emacs.d][config]].
+** Installation
+
+To download this repository as your new emacs.d:
+
+#+begin_src sh
+$ git clone https://github.com/iorest/emacs.d.git ~/.emacs.d
+#+end_src
+
+That's it!
+
+** Usage
+
+A full feature list is pending. A quick overview:
+
+- ample theme and teleline-mode styled for a fashionable look.
+- Use-package macro to isolate package configurations.
+- Magit, the premier git frontend.
+- Smart autocomplete with company-mode.
+- Flycheck.
+- Yasnippet.
+- Language Server Protocol(Optional).
+- Language:
+  - Org
+  - C/C++
+  - Python
+  - HTML/CSS/JavaScript
+  - LaTeX
+  - Emacs Lisp
+  - Go
+  - Rust
+  - Bash
+  - Elixir
+  - Verilog
+  - Dot/plantuml/ditaa/gnuplot
+- Other useful tools.
+  - embrace like surround.vim and more comfortable
+  - hydra keybinding
+  - awesome functions
+  - elfeed
+  - atomic-chrome
+  - emms
+  - tramp
+  - unicad
+  - ...
+
+
+
+** License
+
+Copyright 2018 Iorest
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.

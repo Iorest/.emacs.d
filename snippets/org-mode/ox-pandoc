@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: org-export-pandoc
+# key: oxp
+# group : org-export
+# --
+
+#+AUTHOR:
+#+PANDOC_OPTIONS: standalone:t pdf-engine:xelatex
+${1:#+PANDOC_OPTIONS: template:mytemplate.tex}
+#+BIBLIOGRAPHY: $2
+#+PANDOC_EXTENSIONS: markdown-typography latex+auto_identifiers
+#+PANDOC_VARIABLES: documentclass:ctexart
+#+PANDOC_VARIABLES: classoption:10pt,conference,UTF8
+#+PANDOC_METADATA: page-progression-direction:ltr
+#+latex_header: $3
+
+$0

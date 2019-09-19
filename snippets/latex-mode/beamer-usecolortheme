@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: usecolortheme
+# key: beamercolortheme
+# group: beamergroup
+# --
+\usecolortheme{${1:$$(yas-choose-value '("albatross"  "beaver"  "beetle"  "crane"  "default"  "dolphin"  "dove"  "fly"  "lily"  "orchid"  "rose"  "seagull"  "seahorse"  "sidebartab"  "structure"  "whale"  "wolverine"))}}
+$0

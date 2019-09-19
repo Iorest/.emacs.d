@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: org-export-latex
+# group : org-export
+# key: oxl
+# --
+
+#+TITLE: $1
+#+SUBTITLE: $2
+#+AUTHOR: $3
+#+DATE: \\today
+
+$0

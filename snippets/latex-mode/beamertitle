@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: beamertitle
+# key: beamertitle
+# group: beamergroup
+# --
+\title[${1:short}]{${2:long}}
+\subtitle[$3]{$4}
+\author[$5]{$6}
+\date[$7]{$8}
+\institution[$9]{$10}
+\titlegraphic{\includegraphics[width=0.17\textwidth]{$11}}
+$0

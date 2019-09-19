@@ -1,0 +1,7 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: Source Block result
+# key: srcr
+# group: src
+
+# --
+:results ${1:$$(yas-choose-value '("value" "output" "table" "vector" "list" "scalar" "verbatim" "file" "raw" "org" "html" "latex" "code" "pp" "drawer" "silent" "replace" "append"  "prepend"))} $0

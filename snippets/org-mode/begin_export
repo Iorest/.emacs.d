@@ -1,0 +1,6 @@
+#name : begin_export
+# expand-env: ((yas/indent-line 'fixed) (yas/wrap-around-region 'nil))
+# --
+#+BEGIN_EXPORT ${1:$$(yas-choose-value '("ascii" "beamer" "html" "latex" "texinfo"))}
+  $0
+#+END_EXPORT

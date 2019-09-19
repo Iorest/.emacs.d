@@ -1,0 +1,7 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: Source Block exports
+# key: srcx
+# group: src
+
+# --
+:exports ${1:$$(yas-choose-value '("code" "output" "both" "none"))} $0

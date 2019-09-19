@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: malfont
+# key: malfont
+# group : data science
+# --
+import matplotlib as mpl
+mpl.rcParams['font.sans-serif'] = 'Microsoft YaHei'
+mpl.rcParams['font.size'] = '14'

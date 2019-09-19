@@ -1,0 +1,7 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: Source Block literate
+# key: srcl
+# group: src
+
+# --
+:${1:$$(yas-choose-value '("tangle" "comments" "shebang" "noweb" "var" "prologue"))}

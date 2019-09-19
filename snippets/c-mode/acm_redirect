@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: acm_redirect
+# key: red_c
+# group: acm
+# --
+freopen("input.txt","r",stdin);

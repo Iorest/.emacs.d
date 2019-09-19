@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: bibliography
+# name: bibliography
+# group: environments
+# --
+\begin{thebibliography}{${1:maxitems}}
+  \bibitem[${2:label}]{${3:key}} $0
+\end{thebibliography}

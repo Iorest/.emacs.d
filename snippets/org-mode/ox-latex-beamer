@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: latex-beamer
+# key: lb
+# group : org-export
+# --
+
+* ${1:Section}
+
+** ${2:Frame}
+*** ${3:Block}                                           :B_block:
+    :PROPERTIES:
+    :BEAMER_COL: 0.48
+    :BEAMER_ENV: block
+    :END:
+     $0
+
+

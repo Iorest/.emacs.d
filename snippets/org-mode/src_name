@@ -1,0 +1,7 @@
+# -*- coding: utf-8; mode: snippet -*-
+# name: Source Block name
+# key: srcn
+# group: src
+# expand-env: ((yas/indent-line 'fixed) (yas/wrap-around-region 'nil))
+# --
+#+NAME: $0

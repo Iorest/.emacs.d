@@ -1,0 +1,19 @@
+# name: testbench
+# key: testbench
+# group: verilog
+# --
+`timescale 1ns/1ps
+module testbench;
+
+${2:input}
+
+${1:module};
+
+initial begin
+$0
+end
+
+always  begin
+${3:#10 clk = ~clk;}
+end
+endmodule

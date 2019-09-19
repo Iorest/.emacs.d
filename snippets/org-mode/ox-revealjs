@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: org-export-revealjs
+# key: oxr
+# group : org-export
+# --
+
+#+REVEAL_ROOT: ./reveal.js
+#+REVEAL_HLEVEL: 2
+#+REVEAL_THEME: ${1:$$(yas-choose-value '("beige" "black" "blood" "league" "moon" "night" "serif" "simple" "sky" "solarized" "white"))}
+#+REVEAL_TRANS:  ${2:$$(yas-choose-value '("default" "cube" "page" "concave" "page" "concave" "zoom" "linear" "fade" "none"))}
+#+REVEAL_PLUGINS: ${3:(highlight markdown print-pdf zoom-js math multiplex notes notes-server)}
+
+$0

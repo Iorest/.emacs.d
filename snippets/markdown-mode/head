@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: head
+# key: hd
+# --
+---
+layout: ${1:post}
+title: "${2:TITLE}"
+categories: $3
+description: $4
+tags: $5
+redirect_from: /$6/$7/$8/
+---
+$0

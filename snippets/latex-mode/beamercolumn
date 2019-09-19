@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: beamercolumn
+# key: beamercolumn
+# group: beamergroup
+# --
+\begin{columns}
+  \begin{column}{$1\\textwidth}
+    $0
+  \end{column}
+\end{columns}

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: latex
+# key: latex_
+# group: src
+# --
+#+BEGIN_EXPORT LaTeX
+$0
+#+END_EXPORT

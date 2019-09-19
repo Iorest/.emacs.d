@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: package
+# key: pkg
+# --
+\usepackage{${1:$$(yas-choose-value '("algorithms" "amsmath" "colortbl" "ctex" "eso-pic" "fancyhdr" "float" "fontspec" "geometry" "graphicx" "hyperref" "listings" "multirow"  "siunitx" "titlesec" "titletoc" "titling" "xcolor"))}}

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: accumulate
+# key: accm
+# --
+auto sum = std::accumulate(std::begin(${1:container}), std::end($1), 0);
+$0

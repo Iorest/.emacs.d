@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: org-export-beamer
+# key: oxb
+# group: org-export
+# --
+
+#+TITLE: $1
+#+AUTHOR: $2
+#+OPTIONS: H:2 toc:t num:t
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LATEX_HEADER: \usepackage[UTF8]{ctex}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage[highlight=ture]{listings}
+#+LATEX_HEADER: \lstset{backgroundcolor=\color[RGB]{245,245,244},basicstyle=\ttfamily}
+#+BEAMER_HEADER_EXTRA: \usetheme{${3:$$(yas/choose-value '("default" "Bergen" "Boadilla" "Madrid" "Pittsburgh" "Rochester""Antibes" "JuanLesPins" "Montpellier" "Berkeley" "PaloAlto" "Goettingen""Marburg" "Hannover" "Berlin" "Ilmenau" "Dresden" "Darmstadt" "Frankfurt""Singapore" "Szeged" "Copenhagen" "Luebeck" "Malmoe" "Warsaw" "JLTree" "umbc1" "umbc2" "umbc3" "umbc4"))default}}
+#+BEAMER_HEADER_EXTRA:\usecolortheme{${4:$$(yas/choose-value'("default" "structure" "sidebartab" "albatross" "beetle" "crane" "dove" "fly" "seagull" "lily" "orchid" "rose" "whale" "seahorse" "dolphin"))default}}
+#+BEAMER_THEME:${5:Madrid}
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+
+$0

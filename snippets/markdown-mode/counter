@@ -1,0 +1,32 @@
+# -*- mode: snippet -*-
+# name: counterformath
+# key: cfm
+# --
+﻿<style type="text/css">body {
+    counter-reset: counter;
+}
+
+.theorem:before {
+    counter-increment: counter;
+    /* 增加计数器值 */
+    content: "定理" counter(counter) ".";
+    /* 显示计数器 */
+}
+
+.proposition:before {
+    counter-increment: counter;
+    content: "命题" counter(counter) ".";
+}
+
+.lemma:before {
+    counter-increment: counter;
+    content: "引理" counter(counter) ".";
+}
+
+.theorem,
+.lemma,
+.proposition {
+    font-weight: bold;
+}
+
+</style>
