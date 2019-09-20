@@ -101,25 +101,6 @@
 ;;     :ensure t
 ;;     :after polymode markdown-mode))
 
-;; Format HTML, CSS and JavaScript/JSON by js-beautify
-(use-package web-beautify
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'js-mode
-    (bind-key "C-c b" #'web-beautify-js js-mode-map))
-  (with-eval-after-load 'js2-mode
-    (bind-key "C-c b" #'web-beautify-js js2-mode-map))
-  (with-eval-after-load 'json-mode
-    (bind-key "C-c b" #'web-beautify-js json-mode-map))
-  (with-eval-after-load 'sgml-mode
-    (bind-key "C-c b" #'web-beautify-html html-mode-map))
-  (with-eval-after-load 'css-mode
-    (bind-key "C-c b" #'web-beautify-css css-mode-map))
-  :config
-  ;; Set indent size to 2
-  (setq web-beautify-args '("-s" "2" "-f" "-")))
-
 ;; Live browser JavaScript, CSS, and HTML interaction
 (use-package skewer-mode
   :ensure t

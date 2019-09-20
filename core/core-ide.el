@@ -89,8 +89,8 @@
   (make-variable-buffer-local 'company-backends)
   (setq-default company-backends
                 '(company-tabnine company-capf company-files
-                               (company-keywords company-gtags company-etags company-dabbrev-code)
-                               (company-dabbrev company-abbrev)))
+                                  (company-keywords company-gtags company-etags company-dabbrev-code)
+                                  (company-dabbrev company-abbrev)))
 
   (setq company-show-numbers t)
   (setq company-transformers '(company-sort-by-occurrence))
@@ -264,7 +264,7 @@
 
   ;; Add switch: --tags
   (transient-append-suffix 'magit-fetch
-    "-p" '("-t" "Fetch all tags" ("-t" "--tags"))))
+                           "-p" '("-t" "Fetch all tags" ("-t" "--tags"))))
 
 ;; Access Git forges from Magit
 (if (executable-find "cc")
@@ -343,7 +343,7 @@
      :ensure t
      :hook (prog-mode . lsp)
      :bind (:map lsp-mode-map
-                         ("C-c C-d" . lsp-describe-thing-at-point))
+                 ("C-c C-d" . lsp-describe-thing-at-point))
      :init
      (setq lsp-auto-guess-root t)       ; Detect project root
      (setq lsp-prefer-flymake nil)      ; Use lsp-ui and flycheck
@@ -478,7 +478,23 @@
 (use-package reformatter
   :ensure t
   :defer t
-  :config)
+  :commands (reformatter-define)
+  :init
+  (reformatter-define prettier-js
+    :program "prettier"
+    :args '("--parser" "babel"))
+  (reformatter-define prettier-json
+    :program "prettier"
+    :args '("--parser" "json"))
+  (reformatter-define prettier-html
+    :program "prettier"
+    :args '("--parser" "html"))
+  (reformatter-define prettier-css
+    :program "prettier"
+    :args '("--parser" "css"))
+  (reformatter-define prettier-md
+    :program "prettier"
+    :args '("--parser" "markdown")))
 
 (use-package tldr
   :ensure t
