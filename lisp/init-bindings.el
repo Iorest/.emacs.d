@@ -17,10 +17,6 @@
     :ensure t
     :after ivy))
 
-(use-package cheat-sh
-  :ensure t
-  :defer t)
-
 (defhydra hydra-mark
   (:columns 5  :idle 0)
   "Mark"
@@ -116,8 +112,6 @@
   ("C-e" move-end-of-line "move-end-of-line")
   ("C-x o" switch-window "switch-window")
   ("C-x b" ivy-switch-buffer "switch-buffer")
-
-
   ("q" nil "Quit" :exit t))
 
 ;; Hydra - Multiple cursors
@@ -251,32 +245,6 @@
   ("C-x o" switch-window "switch-window")
   ("C-x b" ivy-switch-buffer "switch-buffer")
   ("q" nil "Quit" :exit t))
-
-(global-set-key (kbd "C-x C-k C-s") 'kmacro-save-macro)
-(global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
-(global-set-key (kbd "C-<backspace>") 'kill-back-to-indentation)
-(global-set-key (kbd "C-:") 'shell-command)
-(global-set-key (kbd "M-!") 'eshell-command)
-(define-prefix-command 'meta-i-map)
-(global-set-key (kbd "M-i") 'meta-i-map)
-(global-set-key (kbd "M-i k") 'counsel-gtags-create-tags)
-(global-set-key (kbd "M-i m") 'hydra-mark/body)
-(global-set-key (kbd "M-i g") 'hydra-move/body)
-(global-set-key (kbd "M-i e") 'hydra-edit/body)
-(global-set-key (kbd "M-i n") 'hydra-mc/body)
-(global-set-key (kbd "M-i t") 'hydra-transpose/body)
-(global-set-key (kbd "M-i o") 'hydra-paredit/body)
-(global-set-key (kbd "M-i h") 'hydra-help/body)
-(global-set-key (kbd "M-i f") 'hydra-function/body)
-(global-set-key (kbd "M-i p") 'symbol-overlay-put)
-(global-set-key (kbd "M-i a") 'embrace-add)
-(global-set-key (kbd "M-i c") 'embrace-change)
-(global-set-key (kbd "M-i d") 'embrace-delete)
-(global-set-key (kbd "M-g <SPC>") 'avy-goto-char)
-(global-set-key (kbd "M-g l") 'goto-last-change)
-(global-set-key (kbd "M-u") 'upcase-dwim)
-(global-set-key (kbd "M-l") 'downcase-dwim)
-(global-set-key (kbd "M-c") 'capitalize-dwim)
 
 
 (provide 'init-bindings)

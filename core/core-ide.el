@@ -140,10 +140,6 @@
   :ensure t
   :defer t
   :init
-  :bind (("M-s k" . counsel-gtags-dwim)
-         ("M-s b" . counsel-gtags-go-backward)
-         ("M-s d" . counsel-gtags-find-definition)
-         ("M-s j" . counsel-gtags-find-reference))
   :config)
 
 (use-package projectile
@@ -228,11 +224,6 @@
 
 (use-package dumb-jump
   :ensure t
-  :bind (("M-g ," . dumb-jump-back)
-         ("M-g i" . dumb-jump-go-prompt)
-         ("M-g ." . dumb-jump-go-other-window)
-         ("M-g x" . dumb-jump-go-prefer-external)
-         ("M-g z" . dumb-jump-go-prefer-external-other-window))
   :config
   ;; curl -LO https://github.com/BurntSushi/ripgrep/releases/download/0.10.0/ripgrep_0.10.0_amd64.deb
   ;; sudo dpkg -i ripgrep_0.10.0_amd64.deb
@@ -457,11 +448,6 @@
   (dolist (lang org-babel-lang-list)
     (eval `(lsp-org-babel-enbale ,lang))))
 
-(use-package tldr
-  :ensure t
-  :defer t)
-
-
 ;;language-support
 (require 'init-python)
 (require 'init-ruby)
@@ -488,6 +474,19 @@
       (:description . "Run Python3 script"))
     :override t)
   :bind (("C-x C-z" . quickrun)))
+
+(use-package reformatter
+  :ensure t
+  :defer t
+  :config)
+
+(use-package tldr
+  :ensure t
+  :defer t)
+
+(use-package cheat-sh
+  :ensure t
+  :defer t)
 
 (provide 'core-ide)
 ;;; core-ide.el ends here

@@ -331,21 +331,7 @@
     (global-set-key (kbd "C-h k") #'helpful-key)
     (global-set-key (kbd "C-h o") #'helpful-symbol))
 
-  :bind (("M-s a"  . counsel-ag)
-         ("M-s f"  . counsel-fzf)
-         ("M-s g"  . counsel-grep)
-         ("M-s l"  . counsel-locate)
-         ("M-s r"  . counsel-rg)
-         ("M-s s"  . swiper)
-         ("M-s h"  . swiper-all)
-         ("C-s"    . swiper-isearch)
-         ("C-r"    . swiper-isearch-backward)
-         ("M-s m"  . counsel-mark-ring)
-         ("M-s t"  . counsel-outline)
-         ("M-g m"  . counsel-imenu)
-         ("M-g k"  . flush-lines)
-         ("C-h u"  . counsel-unicode-char)
-         :map ivy-minibuffer-map
+  :bind (:map ivy-minibuffer-map
          ("C-w" . ivy-yank-word)
 
          ;; Search at point

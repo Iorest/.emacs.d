@@ -55,19 +55,97 @@
   (evil-set-initial-state 'ivy-occur-grep-mode 'emacs)
   (evil-set-initial-state 'rg-mode 'emacs))
 
-(use-package evil-leader
+(use-package general
   :ensure t
   :after evil
-  :config  (global-evil-leader-mode)
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key
-    ":"  'counsel-M-x
-    "ff" 'find-file
-    "bb" 'switch-to-buffer
-    "w/" 'split-window-right
-    "w-" 'split-window-below
-    "wM" 'delete-other-windows
-    "h"  'evil-mark-whole-buffer))
+  :config
+  (general-evil-setup t)
+  (general-define-key
+   :states '(normal visual)
+   :prefix "SPC"
+   ":"  'counsel-M-x
+   "ff" 'find-file
+   "bb" 'switch-to-buffer
+   "w/" 'split-window-right
+   "w-" 'split-window-below
+   "wM" 'delete-other-windows
+   "h"  'evil-mark-whole-buffer
+   )
+
+  (general-define-key
+   ;; :states '(normal motion insert emacs)
+   :states '(normal visual insert emacs)
+   ;; :non-normal-prefix "C-SPC"
+   "C-x C-k C-s" 'kmacro-save-macro
+   "C-M-<backspace>" 'backward-kill-sexp
+   "C-<backspace>" 'kill-back-to-indentation
+   "C-:" 'shell-command
+   "M-!" 'eshell-command
+   "M-u" 'upcase-dwim
+   "M-l" 'downcase-dwim
+   "M-c" 'capitalize-dwim
+   "C-s" 'swiper-isearch
+   "C-r" 'swiper-isearch-backward
+   "C-h u" 'counsel-unicode-char
+   )
+
+  (general-define-key
+   ;; :states '(normal motion insert emacs)
+   :states '(normal visual insert emacs)
+   ;; :non-normal-prefix "C-SPC"
+   :prefix "M-i"
+   "m" 'hydra-mark/body
+   "g" 'hydra-move/body
+   "e" 'hydra-edit/body
+   "n" 'hydra-mc/body
+   "t" 'hydra-transpose/body
+   "o" 'hydra-paredit/body
+   "h" 'hydra-help/body
+   "f" 'hydra-function/body
+   "k" 'counsel-gtags-create-tags
+   "a" 'embrace-add
+   "c" 'embrace-change
+   "d" 'embrace-delete
+   )
+
+  (general-define-key
+   ;; :states '(normal motion insert emacs)
+   :states '(normal visual insert emacs)
+   ;; :non-normal-prefix "C-SPC"
+   :prefix "M-s"
+   "k" 'counsel-gtags-dwim
+   "b" 'counsel-gtags-go-backward
+   "d" 'counsel-gtags-find-definition
+   "j" 'counsel-gtags-find-reference
+   "a" 'counsel-ag
+   "f" 'counsel-fzf
+   "g" 'counsel-grep
+   "l" 'counsel-locate
+   "r" 'counsel-rg
+   "s" 'swiper
+   "h" 'swiper-all
+   "m" 'counsel-mark-ring
+   "t" 'counsel-outline
+   )
+
+  (general-define-key
+   ;; :states '(normal motion insert emacs)
+   :states '(normal visual insert emacs)
+   ;; :non-normal-prefix "C-SPC"
+   :prefix "M-g"
+   "l" 'goto-last-change
+   "<SPC>" 'avy-goto-char
+   "m" 'counsel-imenu
+   "k" 'flush-lines
+   "f" 'format-all-buffer
+   "," 'dumb-jump-back
+   "i" 'dumb-jump-go-prompt
+   "." 'dumb-jump-go-other-window
+   "x" 'dumb-jump-go-prefer-external
+   "z" 'dumb-jump-go-prefer-external-other-window
+   )
+  )
+
 
 (use-package evil-surround
   :ensure t
