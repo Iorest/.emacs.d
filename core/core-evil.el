@@ -122,6 +122,7 @@
    "g" 'counsel-grep
    "l" 'counsel-locate
    "r" 'counsel-rg
+   "v" 'deadgrep
    "s" 'swiper
    "h" 'swiper-all
    "m" 'counsel-mark-ring
@@ -143,6 +144,11 @@
    "." 'dumb-jump-go-other-window
    "x" 'dumb-jump-go-prefer-external
    "z" 'dumb-jump-go-prefer-external-other-window
+   "u" 'browse-url-at-point
+   "v" 'vdiff-current-file
+   "d" 'ediff-current-file
+   "M" 'ivy-imenu-anywhere
+   "j" 'evilmi-jump-items
    )
   )
 
@@ -155,7 +161,6 @@
 (use-package evil-matchit
   :ensure t
   :defer t
-  :bind (("M-g j" . evilmi-jump-items))
   :config  (global-evil-matchit-mode 1))
 
 (use-package evil-numbers

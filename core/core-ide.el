@@ -191,9 +191,7 @@
 
 (use-package deadgrep
   :ensure t
-  :defer t
-  :init
-  :bind (("M-s v" . deadgrep)))
+  :defer t)
 
 ;; rg now is the best to search tool,fast and powerful
 ;; pt is other

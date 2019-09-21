@@ -351,8 +351,7 @@
 
 (use-package imenu-anywhere
   :ensure t
-  :defer t
-  :bind (("M-g M" . ivy-imenu-anywhere)))
+  :defer t)
 
 (use-package autorevert
   :ensure t
@@ -385,8 +384,6 @@
   :defer t
   :hook(;; restore window layout when done
         (ediff-quit . winner-undo))
-  :bind (("M-g d" . ediff-current-file)
-         ("M-g e" . ediff-regions-wordwise))
   :config
   (setq ediff-make-buffers-readonly-at-startup t)
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -398,7 +395,6 @@
   :defer t
   :after hydra
   :hook((vdiff-quit . winner-undo))
-  :bind (("M-g v" . vdiff-current-file))
   :config
   (define-key vdiff-mode-map (kbd "M-i v") vdiff-mode-prefix-map))
 
@@ -489,8 +485,7 @@
 
 (use-package browse-url
   :ensure t
-  :defer t
-  :bind (("M-g u" . browse-url-at-point)))
+  :defer t)
 
 (use-package vlf
   :ensure t
