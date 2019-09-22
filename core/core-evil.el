@@ -158,6 +158,12 @@
   :after evil
   :config  (global-evil-surround-mode))
 
+(use-package evil-goggles
+  :ensure t
+  :after evil
+  :config
+  (evil-goggles-mode))
+
 (use-package evil-matchit
   :ensure t
   :defer t
