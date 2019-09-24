@@ -124,6 +124,9 @@
    "r" 'counsel-rg
    "v" 'deadgrep
    "s" 'swiper
+   ;; "o" 'occur
+   "n" 'counsel-org
+   "p" 'counsel-org-goto-all
    "h" 'swiper-all
    "m" 'counsel-mark-ring
    "t" 'counsel-outline
