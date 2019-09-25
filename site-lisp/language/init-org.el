@@ -52,7 +52,10 @@
                (and (eq 0 (call-process rg nil nil nil switch "--version"))
                     switch))))
         (counsel-ag initial-input "~/Org" extra-rg-args "Search Org:"
-                    :caller 'counsel-org))))
+                    :caller 'counsel-org)))
+    (counsel-set-async-exit-code 'counsel-org 1 "No matches found")
+    (ivy-set-occur 'counsel-org 'counsel-ag-occur)
+    (ivy-set-display-transformer 'counsel-org 'counsel-git-grep-transformer))
   (defun turn-off-truncate-lines ()
     (setq truncate-lines nil))
   (add-hook 'org-mode-hook 'turn-on-org-show-all-inline-images)
