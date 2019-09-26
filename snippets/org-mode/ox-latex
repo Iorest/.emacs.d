@@ -8,5 +8,6 @@
 #+SUBTITLE: $2
 #+AUTHOR: $3
 #+DATE: \\today
-
+#+LATEX_CLASS: $4
+#+LATEX_HEADER_EXTRA: $5
 $0
