@@ -245,6 +245,10 @@
   :config (tiny-setup-default)
   :bind (("C-M-j"  . tiny-expand)))
 
+(use-package auto-yasnippet
+  :ensure t
+  :defer t)
+
 (use-package neotree
   :ensure t
   :defer t
