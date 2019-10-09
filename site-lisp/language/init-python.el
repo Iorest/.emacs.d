@@ -13,10 +13,21 @@
 (use-package python
   :ensure t
   :defer t
+  :hook (inferior-python-mode . (lambda ()
+                                  (process-query-on-exit-flag
+                                   (get-process "Python"))))
   :config
   ;; Disable readline based native completion
   (setq python-shell-completion-native-enable nil)
-  (setq python-shell-interpreter "python3")
+  (when (and (executable-find "python3")
+             (string= python-shell-interpreter "python"))
+    (setq python-shell-interpreter "python3"))
+
+  (with-eval-after-load 'exec-path-from-shell
+    (exec-path-from-shell-copy-env "PYTHONPATH"))
+
+  (use-package live-py-mode
+    :ensure t)
 
   ;; Anaconda mode
   (unless iorest-lsp
