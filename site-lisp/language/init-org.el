@@ -223,6 +223,20 @@
                org-download-screenshot)
     :config
     (setq-default org-download-image-dir "./img")
+    (defun org-download-image-at-point ()
+      (interactive)
+      (let* ((link-info (assoc :link (org-context)))
+             (text (when link-info
+                     (buffer-substring-no-properties (or (cadr link-info) (point-min))
+                                                     (or (caddr link-info) (point-max))))))
+        (if (not text)
+            (error "Not in org link")
+
+          (string-match org-bracket-link-regexp text)
+          (beginning-of-line)
+          (org-download-image (substring text (match-beginning 1) (match-end 1)))
+          (delete-region (point) (line-end-position))
+          )))
     :hook ((org-mode dired-mode) . org-download-enable))
   ;;ob-go
   (use-package ob-go
