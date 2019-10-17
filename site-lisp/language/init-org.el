@@ -39,7 +39,20 @@
        'utf-8' "/tmp/pastetmp496")
       (insert
        (shell-command-to-string "pandoc -f markdown -t org /tmp/pastetmp496"))
-      (f-delete "/tmp/pastetmp496" t)))
+      (f-delete "/tmp/pastetmp496" t))
+    (defun paste-html-to-org (&optional arg)
+      "Yank html to org."
+      (interactive "*P")
+      (f-write-text
+       (current-kill
+        (cond ((listp arg) 0)
+              ((eq arg '-) -2)
+              (t (1- arg))))
+       'utf-8' "/tmp/pastetmp496")
+      (insert
+       (shell-command-to-string "pandoc -f html -t org /tmp/pastetmp496"))
+      (f-delete "/tmp/pastetmp496" t))
+    )
   (with-eval-after-load 'counsel
     (defun counsel-org (&optional initial-input initial-directory extra-rg-args rg-prompt)
       "Grep for search org file."
