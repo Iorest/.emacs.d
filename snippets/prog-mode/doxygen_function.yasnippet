@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Function Doxygen Doc
+# key: doxyff
+# group: doxygen
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+`(yas-trimmed-comment-start)``(let* ((start (yas-trimmed-comment-start)) (lastcom (aref start (1- (length start)))))(make-string 28 lastcom))`
+ `(yas-trimmed-comment-start)` @brief      ${1:function description}
+ `(yas-trimmed-comment-start)`
+ `(yas-trimmed-comment-start)` @details    ${2:detailed description}
+ `(yas-trimmed-comment-start)`
+ `(yas-trimmed-comment-start)` @param      ${3:param}
+ `(yas-trimmed-comment-start)`
+ `(yas-trimmed-comment-start)` @return     ${4:return type}
+`(yas-trimmed-comment-start)``(let* ((start (yas-trimmed-comment-start)) (lastcom (aref start (1- (length start)))))(make-string 28 lastcom))`
