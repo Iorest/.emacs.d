@@ -210,6 +210,8 @@
     (defalias 'projectile-ripgrep 'rg-project)
     (bind-key "s R" #'rg-project projectile-command-map))
 
+  (bind-key "m" #'rg-menu rg-global-map)
+
   (when (fboundp 'ag)
     (bind-key "a" #'ag rg-global-map))
 
