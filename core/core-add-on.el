@@ -59,21 +59,25 @@
   :ensure t
   :defer t)
 
-(use-package maple-scratch
-  :ensure nil
-  :hook (window-setup . maple-scratch-mode)
+(use-package dashboard
+  :ensure t
   :config
-  (setq maple-scratch-alist
-        (append (butlast maple-scratch-alist)
-                '(("Init"
-                   :action 'crux-find-user-init-file
-                   :desc "Open Init File")
-                  ("Scra"
-                   :action 'crux-create-scratch-buffer
-                   :desc "Open Scratch Buffer"))
-                (last maple-scratch-alist))
-        maple-scratch-source t
-        maple-scratch-number 5))
+  (dashboard-setup-startup-hook)
+  (page-break-lines-mode -1)
+  ;; configure initial-buffer-choice to show Dashboard in frames created with emacsclient -c
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  ;; To customize which widgets are displayed, you can use the following snippet
+  (setq dashboard-items '((recents  . 10)
+                          (projects . 10)))
+  ;; Set the banner
+  (setq dashboard-startup-banner "~/.emacs.d/img/dashLogo.png")
+  ;; Set the title
+  (setq dashboard-banner-logo-title "Hey, Iorest!")
+  ;; Content is not centered by default. To center, set
+  (setq dashboard-center-content t)
+  ;; To show navigator below the banner:
+  (setq dashboard-set-navigator t)
+  (setq dashboard-set-file-icons t))
 
 (setq local-file (expand-file-name "init-local.el" user-emacs-directory))
 
