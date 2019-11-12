@@ -98,5 +98,23 @@
   (diminish 'eldoc-mode "ElD")
   (diminish 'abbrev-mode "Abr"))
 
+(use-package quelpa
+  :ensure t
+  :config
+  (use-package quelpa-use-package
+    :ensure t))
+
+
+(use-package try
+  :ensure t
+  :defer t)
+
+(use-package paradox
+  :ensure t
+  :config (paradox-enable))
+
+(use-package cask
+  :ensure t)
+
 (provide 'core-packages)
 ;;; core-packages.el ends here

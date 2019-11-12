@@ -32,12 +32,6 @@
 
 
 (autoload 'unicad "unicad" "Detect coding system smartly" t)
-;; (use-package awesome-tab
-;;   :config
-;;   (awesome-tab-mode t)
-;; )
-;; (setq awesome-tab-background-color "dimgrey")
-;; (awesome-tab-mode t)
 (add-to-list 'auto-mode-alist '("\\.elt\\'" . eltex-mode))
 (autoload 'eltex-mode "eltex" "Write LaTeX in Emacs Lisp" t)
 ;(require 'smart-compile)

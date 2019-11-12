@@ -25,6 +25,7 @@ cookies
 \#*
 .\#*
 /elpa
+/quelpa
 /elpa-*
 site-lisp/package/
 /swank
