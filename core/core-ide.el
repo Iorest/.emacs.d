@@ -95,7 +95,7 @@
   (setq company-show-numbers t)
   (setq company-transformers '(company-sort-by-occurrence))
   (setq company-dabbrev-other-buffers 't)
-  (setq company-idle-delay 0.5)
+  (setq company-idle-delay 1.5)
   (setq company-tooltip-align-annotations t)
 
   (defun local-push-company-backend (backend)

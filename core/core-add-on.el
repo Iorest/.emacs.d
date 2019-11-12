@@ -55,9 +55,10 @@
 
 (use-package dashboard
   :ensure t
-  :config
+  :diminish page-break-lines-mode
+  :init
   (dashboard-setup-startup-hook)
-  (page-break-lines-mode -1)
+  :config
   ;; configure initial-buffer-choice to show Dashboard in frames created with emacsclient -c
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   ;; To customize which widgets are displayed, you can use the following snippet

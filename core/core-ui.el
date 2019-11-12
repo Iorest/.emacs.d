@@ -325,10 +325,16 @@
   :ensure t
   :demand
   :config
-  (centaur-tabs-mode t)
+  ;; (centaur-tabs-mode t)
   :bind
   ("<C-mouse-4>" . centaur-tabs-backward)
   ("<C-mouse-5>" . centaur-tabs-forward))
+
+(use-package eyebrowse
+  :ensure t
+  :config
+  (eyebrowse-mode t))
+
 
 (defun iorest-advice-remove-button (function)
   "Add a button to remove advice in FUNCTION."
