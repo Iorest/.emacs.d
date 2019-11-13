@@ -42,8 +42,6 @@
 
 (when (fboundp 'electric-pair-mode)
   (add-hook 'after-init-hook 'electric-pair-mode))
-(when (fboundp 'global-prettify-symbols-mode)
-  (add-hook 'after-init-hook 'global-prettify-symbols-mode))
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 (when (fboundp 'set-scroll-bar-mode)
@@ -330,8 +328,58 @@
   ("<C-mouse-4>" . centaur-tabs-backward)
   ("<C-mouse-5>" . centaur-tabs-forward))
 
+
+(use-package persp-mode
+  :diminish
+  :defines (recentf-exclude ivy-ignore-buffers ivy-sort-functions-alist)
+  :commands (get-current-persp persp-contain-buffer-p)
+  :hook ((after-init . persp-mode))
+  :init
+  (setq persp-keymap-prefix (kbd "C-x x")
+        persp-nil-name "default"
+        persp-kill-foreign-buffer-behaviour 'kill
+        persp-auto-resume-time 0
+        persp-common-buffer-filter-functions
+        (list #'(lambda (b)
+                  "Ignore temporary buffers."
+                  (or (string-prefix-p " " (buffer-name b))
+                      (and (string-prefix-p "*" (buffer-name b))
+                           (not (string-equal "*scratch*" (buffer-name b))))
+                      (string-prefix-p "magit" (buffer-name b))
+                      (string-prefix-p "Pfuture-Callback" (buffer-name b))
+                      (eq (buffer-local-value 'major-mode b) 'erc-mode)
+                      (eq (buffer-local-value 'major-mode b) 'rcirc-mode)
+                      (eq (buffer-local-value 'major-mode b) 'nov-mode)
+                      (eq (buffer-local-value 'major-mode b) 'vterm-mode))))
+        )
+  :config
+  ;; Don't save persp configs in `recentf'
+  (push persp-save-dir recentf-exclude)
+  (setq ivy-sort-functions-alist
+        (append ivy-sort-functions-alist
+                '((persp-kill-buffer   . nil)
+                  (persp-remove-buffer . nil)
+                  (persp-add-buffer    . nil)
+                  (persp-switch        . nil)
+                  (persp-window-switch . nil)
+                  (persp-frame-switch  . nil))))
+  ;; Integrate IVY
+  (with-eval-after-load 'ivy
+    (add-to-list 'ivy-ignore-buffers
+                 #'(lambda (b)
+                     (when persp-mode
+                       (let ((persp (get-current-persp)))
+                         (if persp
+                             (not (persp-contain-buffer-p b persp))
+                           nil)))))))
+
+
 (use-package eyebrowse
   :ensure t
+  :bind (:map eyebrowse-mode-map
+              ("c" . nil))
+  :init
+  (setq eyebrowse-keymap-prefix (kbd "C-x x"))
   :config
   (eyebrowse-mode t))
 

@@ -42,6 +42,30 @@
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
+(when (fboundp 'prettify-symbols-mode)
+  (add-hook 'prog-mode-hook 'prettify-symbols-mode))
+
+(setq-default prettify-symbols-alist
+              '(("lambda" . ?λ)
+                ("<-" . ?←)
+                ("->" . ?→)
+                ("->>" . ?↠)
+                ("=>" . ?⇒)
+                ("map" . ?↦)
+                ("/=" . ?≠)
+                ("!=" . ?≠)
+                ("==" . ?≡)
+                ("<=" . ?≤)
+                (">=" . ?≥)
+                ("=<<" . (?= (Br . Bl) ?≪))
+                (">>=" . (?≫ (Br . Bl) ?=))
+                ("<=<" . ?↢)
+                (">=>" . ?↣)
+                ("&&" . ?∧)
+                ("||" . ?∨)
+                ("not" . ?¬)))
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+
 (use-package editorconfig
   :ensure t
   :defer t
@@ -153,6 +177,13 @@
               ("%" . projectile-replace-regexp))
   :hook (after-init . projectile-mode)
   :config
+  (use-package ibuffer-projectile
+    :ensure t
+    :functions ibuffer-do-sort-by-alphabetic
+    :hook ((ibuffer . (lambda ()
+                        (ibuffer-projectile-set-filter-groups)
+                        (unless (eq ibuffer-sorting-mode 'alphabetic)
+                          (ibuffer-do-sort-by-alphabetic))))))
   ;; (projectile-update-mode-line)
   (let ((command
          (cond
@@ -268,7 +299,7 @@
 
   ;; Add switch: --tags
   (transient-append-suffix 'magit-fetch
-                           "-p" '("-t" "Fetch all tags" ("-t" "--tags"))))
+    "-p" '("-t" "Fetch all tags" ("-t" "--tags"))))
 
 ;; Access Git forges from Magit
 (if (executable-find "cc")
@@ -315,6 +346,15 @@
          :map gist-list-menu-mode-map
          ("u" . gist-list-user)
          ("s" . gist-list-starred)))
+
+
+(use-package gitattributes-mode
+  :ensure t
+  :defer t
+  :init
+  :config
+  :bind)
+
 
 (use-package gitignore-mode
   :ensure t
