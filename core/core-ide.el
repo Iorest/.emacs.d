@@ -271,7 +271,21 @@
   :ensure t
   :defer t
   :bind (("C-x y" . ivy-yasnippet)))
+          ;; Select from xref candidates with Ivy
+(use-package ivy-xref
+  :ensure t
+  :after ivy
+  :init
+  (when (boundp 'xref-show-definitions-function)
+    (setq xref-show-definitions-function #'ivy-xref-show-defs))
+  (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))
 
+;; Correcting words with flyspell via Ivy
+(use-package flyspell-correct-ivy
+  :ensure t
+  :after flyspell ivy
+  :bind (:map flyspell-mode-map
+              ([remap flyspell-correct-word-before-point] . flyspell-correct-previous-word-generic)))
 (use-package tiny
   :ensure t
   :defer t
