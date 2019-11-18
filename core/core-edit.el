@@ -264,6 +264,19 @@
       counsel-ag
       counsel-rg
       counsel-pt))
+  (defun counsel-org (&optional initial-input initial-directory extra-rg-args rg-prompt)
+    "Grep for search org file."
+    (interactive)
+    (let ((counsel-ag-base-command
+           (concat "rg --with-filename --no-heading --line-number --color never --type org %s" (counsel--rg-targets)))
+          (counsel--grep-tool-look-around
+           (let ((rg (car (split-string counsel-rg-base-command)))
+                 (switch "--pcre2"))
+             (and (eq 0 (call-process rg nil nil nil switch "--version"))
+                  switch))))
+      (counsel-ag initial-input "~/Org" extra-rg-args "Search Org:"
+                  :caller 'counsel-org)))
+
 
   (defun my-ivy-fly-back-to-present ()
     ;; (remove-hook 'pre-command-hook 'my-ivy-fly-back-to-present t)
@@ -332,22 +345,22 @@
     (global-set-key (kbd "C-h o") #'helpful-symbol))
 
   :bind (:map ivy-minibuffer-map
-         ("C-w" . ivy-yank-word)
+              ("C-w" . ivy-yank-word)
 
-         ;; Search at point
-         ;; "M-j": word-at-point
-         ;; "M-n"/"C-w": symbol-at-point
-         ;; Refer to https://www.emacswiki.org/emacs/SearchAtPoint#toc8
-         ;; and https://github.com/abo-abo/swiper/wiki/FAQ
-         ;; ("C-w" . (lambda ()
-         ;;            (interactive)
-         ;;            (insert (format "%s" (with-ivy-window (ivy-thing-at-point))))))
+              ;; Search at point
+              ;; "M-j": word-at-point
+              ;; "M-n"/"C-w": symbol-at-point
+              ;; Refer to https://www.emacswiki.org/emacs/SearchAtPoint#toc8
+              ;; and https://github.com/abo-abo/swiper/wiki/FAQ
+              ;; ("C-w" . (lambda ()
+              ;;            (interactive)
+              ;;            (insert (format "%s" (with-ivy-window (ivy-thing-at-point))))))
 
-         :map counsel-find-file-map
-         ("C-h" . counsel-up-directory)
+              :map counsel-find-file-map
+              ("C-h" . counsel-up-directory)
 
-         :map swiper-map
-         ("M-%" . swiper-query-replace)))
+              :map swiper-map
+              ("M-%" . swiper-query-replace)))
 
 (use-package imenu-anywhere
   :ensure t
@@ -513,6 +526,10 @@
 (use-package delsel
   :ensure t
   :hook (after-init . delete-selection-mode))
+
+(use-package writeroom-mode
+  :ensure t
+  :defer t)
 
 (use-package wc-mode
   :ensure t
