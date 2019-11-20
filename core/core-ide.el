@@ -308,6 +308,7 @@
   :bind (("C-x g" . magit-status)
          ("C-x M-g" . magit-dispatch))
   :config
+  (setq auto-revert-check-vc-info t)
   (when *os-is-win*
     (setenv "GIT_ASKPASS" "git-gui--askpass"))
 
