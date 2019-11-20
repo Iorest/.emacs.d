@@ -103,7 +103,9 @@
                  (evil   . (telephone-line-airline-position-segment)))))
   (telephone-line-mode 1))
 
-
+(use-package all-the-icons
+  :ensure t
+  :defer t)
 
 ;; More friendly display transformer for Ivy
 (use-package ivy-rich

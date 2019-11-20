@@ -65,7 +65,7 @@
   (setq dashboard-items '((recents  . 10)
                           (projects . 10)))
   ;; Set the banner
-  (setq dashboard-startup-banner "~/.emacs.d/img/dashLogo.png")
+  (setq dashboard-startup-banner "~/.emacs.d/img/128x128@2x.png")
   ;; Set the title
   (setq dashboard-banner-logo-title "Hey, Iorest!")
   ;; Content is not centered by default. To center, set

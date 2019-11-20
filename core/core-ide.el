@@ -507,6 +507,7 @@
     (eval `(lsp-org-babel-enbale ,lang))))
 
 ;;language-support
+(require 'init-lisp)
 (require 'init-python)
 (require 'init-ruby)
 (require 'init-rust)

@@ -382,10 +382,6 @@
   :defer t
   :diminish hs-minor-mode)
 
-(use-package suggest
-  :ensure t
-  :defer t)
-
 (use-package expand-region
   :ensure t
   :init (require 'expand-region)
@@ -505,23 +501,6 @@
   :defer t
   :config
   (require 'vlf-setup))
-
-(use-package crux
-  :ensure t
-  :defer t)
-
-
-(use-package s
-  :ensure t
-  :defer t)
-
-(use-package f
-  :ensure t
-  :defer t)
-
-(use-package dash
-  :ensure t
-  :defer t)
 
 (use-package delsel
   :ensure t

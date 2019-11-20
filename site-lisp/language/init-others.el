@@ -10,18 +10,6 @@
 (eval-when-compile
   (require 'init-custom))
 
-(use-package macrostep
-  :ensure t
-  :defer t
-  :bind (:map emacs-lisp-mode-map
-              ("C-c e" . macrostep-expand)
-              :map lisp-interaction-mode-map
-              ("C-c e" . macrostep-expand)))
-
-(use-package cask-mode
-  :ensure t
-  :defer t)
-
 (use-package markdown-mode
   :ensure t
   :defer t
