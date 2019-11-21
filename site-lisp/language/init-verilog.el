@@ -17,7 +17,8 @@
 
 (use-package veri-kompass
   :ensure t
-  :defer t)
+  :defer t
+  :hook (verilog-mode . veri-kompass))
 
 (provide 'init-verilog)
 ;;; init-verilog.el ends here

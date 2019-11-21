@@ -62,6 +62,10 @@
               :map lisp-interaction-mode-map
               ("C-c e" . macrostep-expand)))
 
+(use-package elmacro
+  :ensure t
+  :defer t)
+
 (use-package cask-mode
   :ensure t
   :defer t)
