@@ -11,6 +11,7 @@
 (use-package org
   :ensure t
   :defer t
+  :hook (org-mode . turn-on-org-cdlatex)
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb)
          ("C-c c" . org-capture)
