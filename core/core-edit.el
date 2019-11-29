@@ -162,6 +162,8 @@
            ivy-use-virtual-buffers t
            ivy-virtual-abbreviate 'fullpath
            ivy-count-format ""
+           ivy-height 15
+           ivy-fixed-height-minibuffer t
            ivy-format-function 'ivy-format-function-arrow
            projectile-completion-system 'ivy
            ivy-magic-tilde nil)
@@ -325,6 +327,15 @@
       (ivy-quit-and-run
         (counsel-rg text default-directory))))
   (bind-key "<C-return>" #'my-swiper-toggle-counsel-rg swiper-map)
+
+  (defun my-swiper-toggle-swiper-isearch ()
+    "Toggle `swiper' and `swiper-isearch' with the current input."
+    (interactive)
+    (ivy-quit-and-run
+      (if (eq (ivy-state-caller ivy-last) 'swiper-isearch)
+          (swiper ivy-text)
+        (swiper-isearch ivy-text))))
+  (bind-key "<s-return>" #'my-swiper-toggle-swiper-isearch swiper-map)
 
   (with-eval-after-load 'rg
     (defun my-swiper-toggle-rg-dwim ()
