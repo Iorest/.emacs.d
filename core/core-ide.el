@@ -400,20 +400,25 @@
    ;; https://github.com/emacs-lsp/lsp-mode/blob/master/README-NEXT.md#supported-languages
    (use-package lsp-mode
      :ensure t
-     :hook (prog-mode . lsp)
+     :hook (prog-mode . lsp-deferred)
      :bind (:map lsp-mode-map
                  ("C-c C-d" . lsp-describe-thing-at-point))
      :init
-     (setq lsp-auto-guess-root t)       ; Detect project root
-     (setq lsp-prefer-flymake nil)      ; Use lsp-ui and flycheck
+     (setq lsp-auto-guess-root t        ; Detect project root
+           lsp-keep-workspace-alive nil ; Auto-kill LSP server
+           lsp-prefer-flymake nil       ; Use lsp-ui and flycheck
+           flymake-fringe-indicator-position 'right-fringe)
      :config
-     (defun restart-lsp-server ()
-       "Restart LSP server."
-       (interactive)
-       (lsp-restart-workspace)
-       (revert-buffer t t)
-       (message "LSP server restarted."))
-     (require 'lsp-clients))
+     (use-package lsp-clients
+       :ensure nil
+       :hook (go-mode . (lambda ()
+                          "Format and add/delete imports."
+                          (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                          (add-hook 'before-save-hook #'lsp-organize-imports t t)))
+       :init
+       (setq lsp-clients-python-library-directories '("/usr/local/" "/usr/"))
+       (unless (executable-find "rls")
+         (setq lsp-rust-rls-server-command '("rustup" "run" "stable" "rls")))))
 
    (use-package lsp-ui
      :ensure t
@@ -431,6 +436,10 @@
      (setq company-lsp-cache-candidates 'auto)
      (push 'company-lsp company-backends))
 
+   (use-package lsp-ivy
+     :ensure t
+     :bind (:map lsp-mode-map
+                 ([remap xref-find-apropos] . lsp-ivy-workspace-symbol)))
    ;; C/C++/Objective-C support
    ;; Install: brew tap twlz0ne/homebrew-ccls && brew install ccls
    ;;          refer to  https://github.com/MaskRay/ccls/wiki/Getting-started
@@ -456,6 +465,7 @@
 
 
    (use-package dap-mode
+     :ensure t
      :hook ((after-init . dap-mode)
             (dap-mode . dap-ui-mode)
 
