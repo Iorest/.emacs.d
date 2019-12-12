@@ -372,6 +372,7 @@
               ([remap cd] . counsel-cd)
               ([remap dired] . counsel-dired)
               ([remap set-variable] . counsel-set-variable)
+              ([remap insert-char] . counsel-unicode-char)
               :map swiper-map
               ("M-%" . swiper-query-replace)))
 
@@ -394,6 +395,12 @@
   :ensure t
   :defer t
   :diminish hs-minor-mode)
+
+(use-package origami
+  :ensure t
+  :hook (prog-mode . origami-mode)
+  :init (setq origami-show-fold-header t)
+  :config (face-spec-reset-face 'origami-fold-header-face))
 
 (use-package expand-region
   :ensure t
