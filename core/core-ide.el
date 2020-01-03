@@ -91,6 +91,7 @@
   :ensure t
   :init (add-hook 'after-init-hook 'global-company-mode)
   :bind (("M-/" . company-other-backend)
+         ("M-<RET>" . company-tabnine)
          ("M-C-/"  . company-yasnippet)
          ("C-x /"  . company-dict)
          :map company-active-map
@@ -112,9 +113,9 @@
 
   (make-variable-buffer-local 'company-backends)
   (setq-default company-backends
-                '(company-tabnine company-capf company-files
-                                  (company-keywords company-gtags company-etags company-dabbrev-code)
-                                  (company-dabbrev company-abbrev)))
+                '(company-capf company-files
+                               (company-keywords company-gtags company-etags company-dabbrev-code)
+                               (company-dabbrev company-abbrev)))
 
   (setq company-show-numbers t)
   (setq company-transformers '(company-sort-by-occurrence))
@@ -271,7 +272,7 @@
   :ensure t
   :defer t
   :bind (("C-x y" . ivy-yasnippet)))
-          ;; Select from xref candidates with Ivy
+;; Select from xref candidates with Ivy
 (use-package ivy-xref
   :ensure t
   :after ivy
