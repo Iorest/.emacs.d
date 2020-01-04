@@ -243,7 +243,7 @@
   (setq counsel-find-file-at-point t)
   (setq counsel-yank-pop-separator "\n-------\n")
   (let ((cmd (cond ((executable-find "rg")
-                    "rg -S --no-heading --line-number --color never '%s' %s")
+                    "rg -S --no-heading --line-number --color never %s %s")
                    ((executable-find "ag")
                     "ag -S --noheading --nocolor --nofilename --numbers %s %s")
                    (t counsel-grep-base-command))))
