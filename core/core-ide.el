@@ -405,10 +405,17 @@
      :bind (:map lsp-mode-map
                  ("C-c C-d" . lsp-describe-thing-at-point))
      :init
-     (setq lsp-auto-guess-root t        ; Detect project root
+             ;; @see https://github.com/emacs-lsp/lsp-mode#performance
+     (setq read-process-output-max (* 1024 1024)) ;; 1MB
+
+     (setq lsp-auto-guess-root nil      ; Detect project root
            lsp-keep-workspace-alive nil ; Auto-kill LSP server
+           lsp-enable-indentation nil
+           lsp-enable-on-type-formatting nil
+           lsp-prefer-capf t
            lsp-prefer-flymake nil       ; Use lsp-ui and flycheck
            flymake-fringe-indicator-position 'right-fringe)
+
      :config
      (use-package lsp-clients
        :ensure nil
@@ -417,6 +424,8 @@
                           (add-hook 'before-save-hook #'lsp-format-buffer t t)
                           (add-hook 'before-save-hook #'lsp-organize-imports t t)))
        :init
+
+     ;; For `lsp-clients'
        (setq lsp-clients-python-library-directories '("/usr/local/" "/usr/"))
        (unless (executable-find "rls")
          (setq lsp-rust-rls-server-command '("rustup" "run" "stable" "rls")))))
@@ -545,6 +554,10 @@
       (:description . "Run Python3 script"))
     :override t)
   :bind (("C-x C-z" . quickrun)))
+
+(use-package playonline
+  :ensure t
+  :defer t)
 
 (use-package reformatter
   :ensure t

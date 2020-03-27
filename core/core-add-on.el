@@ -53,6 +53,10 @@
   :ensure t
   :defer t)
 
+(use-package tongbu
+  :ensure t
+  :defer t)
+
 (use-package dashboard
   :ensure t
   :diminish page-break-lines-mode
