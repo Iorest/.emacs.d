@@ -575,7 +575,7 @@
   :ensure t
   :defer t
   :init
-  (setq yankpad-file "~/Org/yankpad.org"))
+  (setq yankpad-file (expand-file-name "yankpad/yankpad.org" user-emacs-directory)))
 
 (provide 'init-org)
 ;;; init-org.el ends here
