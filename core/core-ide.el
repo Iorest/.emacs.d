@@ -184,7 +184,9 @@
     :hook ((ibuffer . (lambda ()
                         (ibuffer-projectile-set-filter-groups)
                         (unless (eq ibuffer-sorting-mode 'alphabetic)
-                          (ibuffer-do-sort-by-alphabetic))))))
+                          (ibuffer-do-sort-by-alphabetic)))))
+    :config 
+    (setq ibuffer-projectile-prefix "Project: "))
   ;; (projectile-update-mode-line)
   (let ((command
          (cond

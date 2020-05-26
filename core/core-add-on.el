@@ -59,7 +59,11 @@
 
 (use-package dashboard
   :ensure t
-  :diminish page-break-lines-mode
+  :functions (all-the-icons-faicon
+              all-the-icons-material
+              winner-undo
+              widget-forward)
+  :custom-face (dashboard-heading ((t (:inherit (font-lock-string-face bold)))))
   :init
   (dashboard-setup-startup-hook)
   :config
