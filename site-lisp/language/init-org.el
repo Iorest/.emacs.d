@@ -302,7 +302,7 @@
     (setq org-pandoc-options-for-revealjs '((variable . "revealjs-url:https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")))
     (setq org-pandoc-options-for-slideous '((variable . "slideous-url:http://goessner.net/download/prj/slideous/")))
     (setq org-pandoc-options-for-slidy '((variable . "slidy-url:http://www.w3.org/Talks/Tools/Slidy2/"))))
-  (when (version> org-version "8.3")
+  (when (not (version< org-version "8.3"))
     (use-package ox-reveal
       :ensure t
       :after ox
