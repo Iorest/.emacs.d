@@ -38,7 +38,8 @@
 (setq auto-save-default nil)
 (setq display-line-numbers-width-start t)
 (setq display-line-numbers-width 3)
-(global-display-line-numbers-mode)
+(if (fboundp 'display-line-numbers-mode)
+  (global-display-line-numbers-mode 1)
 
 
 (require 'dired)
