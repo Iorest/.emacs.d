@@ -31,7 +31,8 @@
 ;;; Code:
 
 
-(setq default-directory "~/Workspace/")
+(when (file-exists-p "~/Workspace/")
+  (setq default-directory "~/Workspace/"))
 (setq visible-bell 0)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
