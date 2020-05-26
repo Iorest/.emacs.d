@@ -22,6 +22,7 @@
 ;; go get -u github.com/davidrjenni/reftools/cmd/fillstruct
 
 (use-package go-mode
+  :ensure t
   :functions (go-packages-gopkgs go-update-tools)
   :bind (:map go-mode-map
          ("C-c R" . go-remove-unused-imports)
@@ -77,13 +78,17 @@
     (go-update-tools))
 
   ;; Misc
-  (use-package go-dlv)
-  (use-package go-fill-struct)
-  (use-package go-impl)
+  (use-package go-dlv
+    :ensure t)
+  (use-package go-fill-struct
+    :ensure t)
+  (use-package go-impl
+    :ensure t)
 
   ;; Install: See https://github.com/golangci/golangci-lint#install
   (use-package flycheck-golangci-lint
     :if (executable-find "golangci-lint")
+    :ensure t
     :after flycheck
     :defines flycheck-disabled-checkers
     :hook (go-mode . (lambda ()
@@ -97,16 +102,19 @@
                        (flycheck-golangci-lint-setup))))
 
   (use-package go-tag
+    :ensure t
     :bind (:map go-mode-map
            ("C-c t t" . go-tag-add)
            ("C-c t T" . go-tag-remove))
     :init (setq go-tag-args (list "-transform" "camelcase")))
 
   (use-package go-gen-test
+    :ensure t
     :bind (:map go-mode-map
            ("C-c t g" . go-gen-test-dwim)))
 
   (use-package gotest
+    :ensure t
     :bind (:map go-mode-map
            ("C-c t a" . go-test-current-project)
            ("C-c t m" . go-test-current-file)
@@ -115,6 +123,7 @@
 
 ;; Local Golang playground for short snippets
 (use-package go-playground
+  :ensure t
   :diminish)
 
 (provide 'init-go)
