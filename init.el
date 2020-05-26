@@ -30,7 +30,7 @@
 ;;; Code:
 
 ;; Enforce minimum Emacs version
-(let ((min-version "25.2"))
+(let ((min-version "25.3"))
   (when (version< emacs-version min-version)
     (error "Gnu Emacs %s or newer is required" min-version)))
 
