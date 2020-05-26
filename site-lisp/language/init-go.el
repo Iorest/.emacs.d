@@ -43,16 +43,17 @@
     :ensure t
     :hook (go-mode . flycheck-golangci-lint-setup))
 
-  (with-eval-after-load 'projectile
-    (use-package go-projectile
-      :ensure t
-      :commands (go-projectile-mode go-projectile-switch-project)
-      :hook ((go-mode . go-projectile-mode)
-	     (projectile-after-switch-project . go-projectile-switch-project))))
-
   (use-package go-eldoc
     :ensure t
     :hook (go-mode . go-eldoc-setup))
+
+  (with-eval-after-load 'projectile
+    (use-package go-projectile
+      :ensure t
+      :after go-eldoc
+      :commands (go-projectile-mode go-projectile-switch-project)
+      :hook ((go-mode . go-projectile-mode)
+	     (projectile-after-switch-project . go-projectile-switch-project))))
 
   (use-package gotest
     :ensure t
