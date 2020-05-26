@@ -35,12 +35,12 @@
 
 (use-package exec-path-from-shell
   :ensure t
+  :if (memq window-system '(mac ns x))
   :init (setq exec-path-from-shell-check-startup-files nil)
   (setq exec-path-from-shell-arguments '("-l"))
   :config (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "GOROOT" "GOPATH" "EDITOR"))
             (add-to-list 'exec-path-from-shell-variables var))
-  (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize)))
+  (exec-path-from-shell-initialize))
 
 (when (fboundp 'prettify-symbols-mode)
   (add-hook 'prog-mode-hook 'prettify-symbols-mode))
