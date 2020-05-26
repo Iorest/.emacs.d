@@ -67,8 +67,6 @@
   :init
   (dashboard-setup-startup-hook)
   :config
-  ;; configure initial-buffer-choice to show Dashboard in frames created with emacsclient -c
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   ;; To customize which widgets are displayed, you can use the following snippet
   (setq dashboard-items '((recents  . 10)
                           (projects . 10)))
