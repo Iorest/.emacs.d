@@ -388,9 +388,16 @@
 
 (use-package undo-tree
   :ensure t
-  :init (add-hook 'after-init-hook 'global-undo-tree-mode)
-  :config
-  :diminish undo-tree-mode)
+  :hook (after-init . global-undo-tree-mode)
+  :init
+  (setq undo-tree-visualizer-timestamps t
+        undo-tree-enable-undo-in-region nil
+        undo-tree-auto-save-history nil)
+
+  ;; HACK: keep the diff window
+  (with-no-warnings
+    (make-variable-buffer-local 'undo-tree-visualizer-diff)
+    (setq-default undo-tree-visualizer-diff t)))
 
 (use-package hideshow
   :ensure t
