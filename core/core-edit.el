@@ -39,7 +39,7 @@
 (setq display-line-numbers-width-start t)
 (setq display-line-numbers-width 3)
 (if (fboundp 'display-line-numbers-mode)
-  (global-display-line-numbers-mode 1)
+  (global-display-line-numbers-mode 1))
 
 
 (require 'dired)
