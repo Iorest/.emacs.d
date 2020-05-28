@@ -19,6 +19,7 @@
   :after ivy)
 
 (use-package pretty-hydra
+  :ensure t
   :bind ("<f6>" . toggles-hydra/body)
   :init
   ;; Global toggles
