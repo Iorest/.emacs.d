@@ -62,6 +62,7 @@
   (server-start))
 
 (require 'init-utils)
+(require 'init-bindings)
 (require 'core-ide)
 (require 'core-ui)
 (require 'core-edit)

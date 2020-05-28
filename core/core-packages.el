@@ -34,41 +34,71 @@
 (eval-when-compile
   (require 'init-custom))
 
-;;
-;; ELPA: refer to https://github.com/melpa/melpa and https://elpa.emacs-china.org/.
-;;
-(defun set-package-archives (archives)
-  "Set specific package ARCHIVES repository."
+(defun set-package-archives (archives &optional refresh async no-save)
+  "Set the package archives (ELPA).
+REFRESH is non-nil, will refresh archive contents.
+ASYNC specifies whether to perform the downloads in the background.
+Save to `custom-file' if NO-SAVE is nil."
   (interactive
-   (list (intern (completing-read "Choose package archives: "
-                                  '(melpa melpa-mirror emacs-china netease tuna)))))
+   (list
+    (intern (completing-read "Select package archives: "
+                             (mapcar #'car iorest-package-archives-alist)))))
+  ;; Set option
+  (set-variable 'iorest-package-archives archives no-save)
 
-  (setq package-archives
-        (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                            (not (gnutls-available-p))))
-               (proto (if no-ssl "http" "https")))
-          (pcase archives
-            ('melpa
-             `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://melpa.org/packages/"))))
-            ('melpa-mirror
-             `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://www.mirrorservice.org/sites/melpa.org/packages/"))))
-            ('emacs-china
-             `(,(cons "gnu"   (concat proto "://elpa.emacs-china.org/gnu/"))
-               ,(cons "melpa" (concat proto "://elpa.emacs-china.org/melpa/"))))
-            ('netease
-             `(,(cons "gnu"   (concat proto "://mirrors.163.com/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.163.com/elpa/melpa/"))))
-            ('tuna
-             `(,(cons "gnu"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))
-            (archives
-             (error "Unknown archives: '%s'" archives)))))
+  ;; Refresh if need
+  (and refresh (package-refresh-contents async))
 
-  (message "Set package archives to '%s'." archives))
+  (message "Set package archives to `%s'" archives))
+(defalias 'iorest-set-package-archives #'set-package-archives)
 
-(set-package-archives iorest-package-archives)
+;; Refer to https://emacs-china.org/t/elpa/11192
+(defun iorest-test-package-archives (&optional no-chart)
+  "Test connection speed of all package archives and display on chart.
+Not displaying the chart if NO-CHART is non-nil.
+Return the fastest package archive."
+  (interactive)
+
+  (let* ((urls (mapcar
+                (lambda (url)
+                  (concat url "archive-contents"))
+                (mapcar #'cdr
+                        (mapcar #'cadr
+                                (mapcar #'cdr
+                                        iorest-package-archives-alist)))))
+         (durations (mapcar
+                     (lambda (url)
+                       (let ((start (current-time)))
+                         (message "Fetching %s..." url)
+                         (cond ((executable-find "curl")
+                                (call-process "curl" nil nil nil "--max-time" "10" url))
+                               ((executable-find "wget")
+                                (call-process "wget" nil nil nil "--timeout=10" url))
+                               (t (user-error "curl or wget is not found")))
+                         (float-time (time-subtract (current-time) start))))
+                     urls))
+         (fastest (car (nth (cl-position (apply #'min durations) durations)
+                            iorest-package-archives-alist))))
+
+    ;; Display on chart
+    (when (and (not no-chart)
+               (require 'chart nil t)
+               (require 'url nil t))
+      (chart-bar-quickie
+       'horizontal
+       "Speed test for the ELPA mirrors"
+       (mapcar (lambda (url) (url-host (url-generic-parse-url url))) urls) "ELPA"
+       (mapcar (lambda (d) (* 1e3 d)) durations) "ms"))
+
+    (message "%s" urls)
+    (message "%s" durations)
+    (message "%s is the fastest package archive" fastest)
+
+    ;; Return the fastest
+    fastest))
+
+
+(iorest-set-package-archives iorest-package-archives)
 
 ;; Initialize packages
 (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27

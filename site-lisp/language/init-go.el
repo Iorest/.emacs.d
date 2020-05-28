@@ -74,8 +74,8 @@
                (message "Failed to install %s: %d" pkg status))))))))
 
   ;; Try to install go tools if `gopls' is not found
-  (unless (executable-find "gopls")
-    (go-update-tools))
+  ;; (unless (executable-find "gopls")
+  ;;   (go-update-tools))
 
   ;; Misc
   (use-package go-dlv

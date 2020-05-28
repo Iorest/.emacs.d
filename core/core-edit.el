@@ -387,9 +387,13 @@
   :diminish auto-revert-mode
   :hook (after-init . global-auto-revert-mode))
 
+(use-package hungry-delete
+  :ensure t)
+
 (use-package undo-tree
   :ensure t
   :hook (after-init . global-undo-tree-mode)
+  :diminish "U-T"
   :init
   (setq undo-tree-visualizer-timestamps t
         undo-tree-enable-undo-in-region nil
@@ -557,6 +561,6 @@
                 "*Buffer List*"
                 "*Ibuffer*"
                 "*esh command on file*")))
-(require 'init-bindings)
+
 (provide 'core-edit)
 ;;; core-edit.el ends here

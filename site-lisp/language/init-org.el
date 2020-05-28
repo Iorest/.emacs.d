@@ -11,61 +11,95 @@
 (use-package org
   :ensure t
   :defer t
+  :custom-face (org-ellipsis ((t (:foreground nil))))
+  :preface
+  (defun hot-expand (str &optional mod)
+    "Expand org template.
+STR is a structure template string recognised by org like <s. MOD is a
+string with additional parameters to add the begin line of the
+structure element. HEADER string includes more parameters that are
+prepended to the element after the #+HEADER: tag."
+    (let (text)
+      (when (region-active-p)
+        (setq text (buffer-substring (region-beginning) (region-end)))
+        (delete-region (region-beginning) (region-end)))
+      (insert str)
+      (if (fboundp 'org-try-structure-completion)
+          (org-try-structure-completion) ; < org 9
+        (progn
+          ;; New template expansion since org 9
+          (require 'org-tempo nil t)
+          (org-tempo-complete-tag)))
+      (when mod (insert mod) (forward-line))
+      (when text (insert text))))
+  :pretty-hydra
+  ((:title "Org Template"
+           :color blue :quit-key "q")
+   ("Basic"
+    (("a" (hot-expand "<a") "ascii")
+     ("c" (hot-expand "<c") "center")
+     ("C" (hot-expand "<C") "comment")
+     ("e" (hot-expand "<e") "example")
+     ("E" (hot-expand "<E") "export")
+     ("h" (hot-expand "<h") "html")
+     ("l" (hot-expand "<l") "latex")
+     ("n" (hot-expand "<n") "note")
+     ("o" (hot-expand "<q") "quote")
+     ("v" (hot-expand "<v") "verse"))
+    "Head"
+    (("i" (hot-expand "<i") "index")
+     ("A" (hot-expand "<A") "ASCII")
+     ("I" (hot-expand "<I") "INCLUDE")
+     ("H" (hot-expand "<H") "HTML")
+     ("L" (hot-expand "<L") "LaTeX"))
+    "Source"
+    (("s" (hot-expand "<s") "src")
+     ("m" (hot-expand "<s" "emacs-lisp") "emacs-lisp")
+     ("y" (hot-expand "<s" "python :results output") "python")
+     ("p" (hot-expand "<s" "perl") "perl")
+     ("r" (hot-expand "<s" "ruby") "ruby")
+     ("S" (hot-expand "<s" "sh") "sh")
+     ("g" (hot-expand "<s" "go :imports '\(\"fmt\"\)") "golang"))
+    "Misc"
+    (("u" (hot-expand "<s" "plantuml :file CHANGE.png") "plantuml")
+     ("Y" (hot-expand "<s" "ipython :session :exports both :results raw drawer\n$0") "ipython")
+     ("P" (progn
+            (insert "#+HEADERS: :results output :exports both :shebang \"#!/usr/bin/env perl\"\n")
+            (hot-expand "<s" "perl")) "Perl tangled")
+     ("<" self-insert-command "ins"))))
   :hook (org-mode . turn-on-org-cdlatex)
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb)
          ("C-c c" . org-capture)
-         ("C-c l" . org-store-link))
-  :hook (org-indent-mode . (lambda()
-                             (diminish 'org-indent-mode)
-                             ;; WORKAROUND: Prevent text moving around while using brackets
-                             ;; @see https://github.com/seagle0128/.emacs.d/issues/88
-                             (make-variable-buffer-local 'show-paren-mode)
-                             (setq show-paren-mode nil)))
+         ("C-c l" . org-store-link)
+         :map org-mode-map
+         ("<" . (lambda ()
+                  "Insert org template."
+                  (interactive)
+                  (if (or (region-active-p) (looking-back "^\s*" 1))
+                      (org-hydra/body)
+                    (self-insert-command 1)))))
+  :hook ((org-mode . (lambda ()
+                       "Beautify org symbols."
+                       (setq prettify-symbols-alist iorest-prettify-org-symbols-alist)
+                       (prettify-symbols-mode 1)))
+         (org-indent-mode . (lambda()
+                              (diminish 'org-indent-mode)
+                              ;; WORKAROUND: Prevent text moving around while using brackets
+                              ;; @see https://github.com/seagle0128/.emacs.d/issues/88
+                              (make-variable-buffer-local 'show-paren-mode)
+                              (setq show-paren-mode nil))))
   :config
-  (defun turn-on-org-show-all-inline-images ()
-    (org-display-inline-images t t))
-
-  (with-eval-after-load 'f
-    (defun paste-markdown-to-org (&optional arg)
-      "Yank markdown to org."
-      (interactive "*P")
-      (f-write-text
-       (replace-regexp-in-string
-        "\\(?1:`\\)" "\\1"
-        (current-kill
-         (cond ((listp arg) 0)
-               ((eq arg '-) -2)
-               (t (1- arg)))))
-       'utf-8' "/tmp/pastetmp496")
-      (insert
-       (shell-command-to-string "pandoc -f markdown -t org /tmp/pastetmp496"))
-      (f-delete "/tmp/pastetmp496" t))
-    (defun paste-html-to-org (&optional arg)
-      "Yank html to org."
-      (interactive "*P")
-      (f-write-text
-       (current-kill
-        (cond ((listp arg) 0)
-              ((eq arg '-) -2)
-              (t (1- arg))))
-       'utf-8' "/tmp/pastetmp496")
-      (insert
-       (shell-command-to-string "pandoc -f html -t org /tmp/pastetmp496"))
-      (f-delete "/tmp/pastetmp496" t))
-    )
-  (defun turn-off-truncate-lines ()
-    (setq truncate-lines nil))
-  (add-hook 'org-mode-hook 'turn-on-org-show-all-inline-images)
-  (add-hook 'org-mode-hook 'turn-off-truncate-lines)
-  (setq org-agenda-files '("~/Org/Agenda" "~/Org/Capture"))
-  (setq org-capture-files '("~/Org/Capture"))
-  (setq org-todo-keywords
+  (setq org-agenda-files '("~/Org/Agenda" "~/Org/Capture")
+        org-capture-files '("~/Org/Capture")
+        org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
           (sequence "TODO(t)" "STARTED(s)" "DOING(i)" "HOLD(h)" "|" "DONE(d!/!)" "CANCEL(c@/!)")
           (sequence "PROJECT(p)" "WAITING(w@/!)" "HOLD(h)" "DELEGATED(e!)" "|" "TOPAY(l!/!)" "DONE(d!/!)" "CANCEL(c@/!)")
           (sequence "REMIND(r)" "|" "CANCEL(c@/!)")
           (sequence "⚑(T)" "🏴(I)" "❓(H)" "|" "✔(D)" "✘(C)"))
+        org-todo-keyword-faces '(("HANGUP" . warning)
+                                 ("❓" . warning))
         org-todo-repeat-to-state "NEXT")
 
   (setq org-highest-priority ?A
@@ -75,6 +109,7 @@
                              (?B . (:foreground "WhiteSmoke"))
                              (?C . (:foreground "DarkViolet"))
                              (?D . (:foreground "LightGreen"))))
+
 
   (setq org-tag-alist '(("WORK" . ?w) ("PROJECT" . ?p) ("DAILY" . ?d)))
 
@@ -121,6 +156,7 @@
         org-confirm-babel-evaluate nil
         org-support-shift-select 'always)
 
+
   (use-package ox-gfm
     :ensure t
     :after org
@@ -128,41 +164,11 @@
 
   ;; (add-to-list 'org-export-backends 'md)
 
-  ;; More fancy UI
-  (use-package org-bullets
-    :ensure t
-    :hook (org-mode . org-bullets-mode)
-    :init
-    (setq
-     org-bullets-bullet-list
-     '(;;; Large
-       "●"
-       "◉"
-       "○"
-       "✸"
-       ;; "✿"
-       ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
-    ;;; Small
-       ;; ► • ★ ▸
-       )))
-
-  (use-package htmlize
-    :ensure t
-    :init)
-
-  (use-package org-preview-html
-    :ensure t
-    :after org
-    :diminish org-preview-html-mode)
-
-  (use-package org-pomodoro
-    :ensure t
-    :after org-agenda
-    :bind (:map org-agenda-mode-map
-                ("P" . org-pomodoro)))
-
-
   ;; Babel Settings
+  ;; Babel
+  (setq org-confirm-babel-evaluate nil
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t)
   ;; 按下C-c ’ 后进入 Org-src block 下写代码
   (add-to-list 'org-src-lang-modes '("dot" . graphviz-dot))
   (defvar load-language-list '((plantuml . t)
@@ -183,59 +189,6 @@
                                (python . t)
                                (ruby . t)))
   (setq org-babel-python-command "python3")
-  ;;ob-plantuml
-  (let ((jar-name "plantuml.jar")
-        (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
-    (setq org-plantuml-jar-path (expand-file-name jar-name (file-name-directory user-init-file)))
-    (unless (file-exists-p org-plantuml-jar-path)
-      (url-copy-file url org-plantuml-jar-path)))
-  ;;ob-ditaa
-  (defun iorest/grab-ditaa (url jar-name)
-    "Download URL and extract JAR-NAME as `org-ditaa-jar-path'."
-    ;; TODO: handle errors
-    (message "Grabbing %s for org." jar-name)
-    (let ((zip-temp (make-temp-name "emacs-ditaa")))
-      (unwind-protect
-          (progn
-            (when (executable-find "unzip")
-              (url-copy-file url zip-temp)
-              (shell-command (concat "unzip -p " (shell-quote-argument zip-temp)
-                                     " " (shell-quote-argument jar-name) " > "
-                                     (shell-quote-argument org-ditaa-jar-path)))))
-        (when (file-exists-p zip-temp)
-          (delete-file zip-temp)))))
-
-  (unless (and (boundp 'org-ditaa-jar-path)
-               (file-exists-p org-ditaa-jar-path))
-    (let ((jar-name "ditaa0_9.jar")
-          (url "http://jaist.dl.sourceforge.net/project/ditaa/ditaa/0.9/ditaa0_9.zip"))
-      (setq org-ditaa-jar-path (expand-file-name jar-name (file-name-directory user-init-file)))
-      (unless (file-exists-p org-ditaa-jar-path)
-        (iorest/grab-ditaa url jar-name))))
-
-  (use-package org-download
-    :ensure t
-    :after org
-    :commands (org-download-enable
-               org-download-yank
-               org-download-screenshot)
-    :config
-    (setq-default org-download-image-dir "./img")
-    (defun org-download-image-at-point ()
-      (interactive)
-      (let* ((link-info (assoc :link (org-context)))
-             (text (when link-info
-                     (buffer-substring-no-properties (or (cadr link-info) (point-min))
-                                                     (or (caddr link-info) (point-max))))))
-        (if (not text)
-            (error "Not in org link")
-
-          (string-match org-bracket-link-regexp text)
-          (beginning-of-line)
-          (org-download-image (substring text (match-beginning 1) (match-end 1)))
-          (delete-region (point) (line-end-position))
-          )))
-    :hook ((org-mode dired-mode) . org-download-enable))
   ;;ob-go
   (use-package ob-go
     :ensure t
@@ -288,76 +241,219 @@
 
   (org-babel-do-load-languages 'org-babel-load-languages
                                load-language-list)
+  ;;ob-plantuml
+  (let ((jar-name "plantuml.jar")
+        (url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
+    (setq org-plantuml-jar-path (expand-file-name jar-name (file-name-directory user-init-file)))
+    (unless (file-exists-p org-plantuml-jar-path)
+      (url-copy-file url org-plantuml-jar-path)))
+  ;;ob-ditaa
+  (defun iorest/grab-ditaa (url jar-name)
+    "Download URL and extract JAR-NAME as `org-ditaa-jar-path'."
+    ;; TODO: handle errors
+    (message "Grabbing %s for org." jar-name)
+    (let ((zip-temp (make-temp-name "emacs-ditaa")))
+      (unwind-protect
+          (progn
+            (when (executable-find "unzip")
+              (url-copy-file url zip-temp)
+              (shell-command (concat "unzip -p " (shell-quote-argument zip-temp)
+                                     " " (shell-quote-argument jar-name) " > "
+                                     (shell-quote-argument org-ditaa-jar-path)))))
+        (when (file-exists-p zip-temp)
+          (delete-file zip-temp)))))
 
-  ;; Export Settings
-  (use-package ox-pandoc
+  (unless (and (boundp 'org-ditaa-jar-path)
+               (file-exists-p org-ditaa-jar-path))
+    (let ((jar-name "ditaa0_9.jar")
+          (url "http://jaist.dl.sourceforge.net/project/ditaa/ditaa/0.9/ditaa0_9.zip"))
+      (setq org-ditaa-jar-path (expand-file-name jar-name (file-name-directory user-init-file)))
+      (unless (file-exists-p org-ditaa-jar-path)
+        (iorest/grab-ditaa url jar-name))))
+
+
+  (with-eval-after-load 'f
+    (defun paste-markdown-to-org (&optional arg)
+      "Yank markdown to org."
+      (interactive "*P")
+      (f-write-text
+       (replace-regexp-in-string
+        "\\(?1:`\\)" "\\1"
+        (current-kill
+         (cond ((listp arg) 0)
+               ((eq arg '-) -2)
+               (t (1- arg)))))
+       'utf-8' "/tmp/pastetmp496")
+      (insert
+       (shell-command-to-string "pandoc -f markdown -t org /tmp/pastetmp496"))
+      (f-delete "/tmp/pastetmp496" t))
+    (defun paste-html-to-org (&optional arg)
+      "Yank html to org."
+      (interactive "*P")
+      (f-write-text
+       (current-kill
+        (cond ((listp arg) 0)
+              ((eq arg '-) -2)
+              (t (1- arg))))
+       'utf-8' "/tmp/pastetmp496")
+      (insert
+       (shell-command-to-string "pandoc -f html -t org /tmp/pastetmp496"))
+      (f-delete "/tmp/pastetmp496" t))
+    )
+
+  (defun turn-on-org-show-all-inline-images ()
+    (org-display-inline-images t t))
+
+  (add-hook 'org-mode-hook 'turn-on-org-show-all-inline-images)
+
+
+  ;; More fancy UI
+  (use-package org-bullets
     :ensure t
+    :hook (org-mode . org-bullets-mode)
     :init
+    (setq
+     org-bullets-bullet-list
+     '(;;; Large
+       "●"
+       "◉"
+       "○"
+       "✸"
+       ;; "✿"
+       ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+    ;;; Small
+       ;; ► • ★ ▸
+       )))
+
+  (use-package htmlize
+    :ensure t
+    :init)
+
+  (use-package org-preview-html
+    :ensure t
+    :after org
+    :diminish org-preview-html-mode)
+
+  ;; Pomodoro
+  (use-package org-pomodoro
+    :ensure t
+    :custom-face
+    (org-pomodoro-mode-line ((t (:inherit warning))))
+    (org-pomodoro-mode-line-overtime ((t (:inherit error))))
+    (org-pomodoro-mode-line-break ((t (:inherit success))))
+    :bind (:map org-agenda-mode-map
+                ("P" . org-pomodoro))))
+;; org-roam
+(when (and (not (version< emacs-version "26")) (executable-find "cc"))
+  (use-package org-roam
+    :ensure t
+    :diminish
+    :hook (after-init . org-roam-mode)
+    :config (setq org-roam-directory "~/Org/org-roam/")
+    :bind (:map org-roam-mode-map
+                (("C-c n l" . org-roam)
+                 ("C-c n f" . org-roam-find-file)
+                 ("C-c n g" . org-roam-graph))
+                :map org-mode-map
+                (("C-c n i" . org-roam-insert)))))
+
+;;extend
+(use-package org-download
+  :ensure t
+  :after org
+  :commands (org-download-enable
+             org-download-yank
+             org-download-screenshot)
+  :config
+  (setq-default org-download-image-dir "./img")
+  (defun org-download-image-at-point ()
+    (interactive)
+    (let* ((link-info (assoc :link (org-context)))
+           (text (when link-info
+                   (buffer-substring-no-properties (or (cadr link-info) (point-min))
+                                                   (or (caddr link-info) (point-max))))))
+      (if (not text)
+          (error "Not in org link")
+
+        (string-match org-bracket-link-regexp text)
+        (beginning-of-line)
+        (org-download-image (substring text (match-beginning 1) (match-end 1)))
+        (delete-region (point) (line-end-position))
+        )))
+  :hook ((org-mode dired-mode) . org-download-enable))
+
+
+;; Export Settings
+(use-package ox-pandoc
+  :ensure t
+  :init
+  :after ox
+  :config
+  (setq org-pandoc-options '((standalone . t)))
+  (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex") (variable . "CJKmainfont:WenQuanYi Micro Hei")))
+  (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex") (variable . "CJKmainfont:WenQuanYi Micro Hei")))
+  (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
+  (setq org-pandoc-options-for-revealjs '((variable . "revealjs-url:https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")))
+  (setq org-pandoc-options-for-slideous '((variable . "slideous-url:http://goessner.net/download/prj/slideous/")))
+  (setq org-pandoc-options-for-slidy '((variable . "slidy-url:http://www.w3.org/Talks/Tools/Slidy2/"))))
+
+
+(when (not (version< org-version "8.3"))
+  (use-package ox-reveal
+    :ensure t
     :after ox
     :config
-    (setq org-pandoc-options '((standalone . t)))
-    (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex") (variable . "CJKmainfont:WenQuanYi Micro Hei")))
-    (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex") (variable . "CJKmainfont:WenQuanYi Micro Hei")))
-    (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
-    (setq org-pandoc-options-for-revealjs '((variable . "revealjs-url:https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")))
-    (setq org-pandoc-options-for-slideous '((variable . "slideous-url:http://goessner.net/download/prj/slideous/")))
-    (setq org-pandoc-options-for-slidy '((variable . "slidy-url:http://www.w3.org/Talks/Tools/Slidy2/"))))
-  (when (not (version< org-version "8.3"))
-    (use-package ox-reveal
-      :ensure t
-      :after ox
-      :config
-      (setq org-reveal-root "https://cdn.bootcss.com/reveal.js/3.8.0/")))
+    (setq org-reveal-root "https://cdn.bootcss.com/reveal.js/3.8.0/")))
 
-  (require 'ox-publish)
-  (org-link-set-parameters
-   "cite"
-   :follow (lambda (path) (message "Citation to Export."))
-   :export (lambda (path desc format)
-             (cond
-              ((eq format 'html)
-               (format "(<cite>%s</cite>)" path))
-              ((eq format 'latex)
-               (if (or (not desc) (equal 0 (search "cite:" desc)))
-                   (format "\\cite{%s}" path)
-                 (format "\\cite[%s]{%s}" desc path)))))
-   :face '(:foreground "red")
-   :help-echo "Insert a Citation.")
+(require 'ox-publish)
+(org-link-set-parameters
+ "cite"
+ :follow (lambda (path) (message "Citation to Export."))
+ :export (lambda (path desc format)
+           (cond
+            ((eq format 'html)
+             (format "(<cite>%s</cite>)" path))
+            ((eq format 'latex)
+             (if (or (not desc) (equal 0 (search "cite:" desc)))
+                 (format "\\cite{%s}" path)
+               (format "\\cite[%s]{%s}" desc path)))))
+ :face '(:foreground "red")
+ :help-echo "Insert a Citation.")
 
-  (setq org-publish-project-alist
-        '(("org-notes"
-           :base-directory "~/Org/Notes/"
-           :base-extension "org"
-           :publishing-directory "~/Org/Publish/Notes/"
-           :recursive t
-           :publishing-function org-html-publish-to-html
+(setq org-publish-project-alist
+      '(("org-notes"
+         :base-directory "~/Org/Notes/"
+         :base-extension "org"
+         :publishing-directory "~/Org/Publish/Notes/"
+         :recursive t
+         :publishing-function org-html-publish-to-html
                                         ;:auto-sitemap t
                                         ;:sitemap-filename "sitemap.org"
                                         ;:sitemap-title "Sitemap"
                                         ;:sitemap-sort-folders last
-           :headline-levels 4)
-          ("org-static"
-           :base-directory "~/Org/Notes/"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-           :publishing-directory "~/Org/Publish/Notes/"
-           :recursive t
-           :publishing-function org-publish-attachment)
-          ("org-site" :components ("org-notes" "org-static"))
-          ("org-books"
-           :base-directory "~/Org/Notes/"
-           :base-extension "org"
-           :publishing-directory "~/Org/Publish/Books/"
-           :recursive t
-           :publishing-function org-latex-publish-to-pdf
-           :headline-levels 4)))
+         :headline-levels 4)
+        ("org-static"
+         :base-directory "~/Org/Notes/"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "~/Org/Publish/Notes/"
+         :recursive t
+         :publishing-function org-publish-attachment)
+        ("org-site" :components ("org-notes" "org-static"))
+        ("org-books"
+         :base-directory "~/Org/Notes/"
+         :base-extension "org"
+         :publishing-directory "~/Org/Publish/Books/"
+         :recursive t
+         :publishing-function org-latex-publish-to-pdf
+         :headline-levels 4)))
 
-  (with-eval-after-load 'org
-    (require 'ox-beamer))
+(with-eval-after-load 'org
+  (require 'ox-beamer))
 
-  (add-to-list
-   'org-latex-classes
-   '("myart"
-     "
+(add-to-list
+ 'org-latex-classes
+ '("myart"
+   "
 \\documentclass{article}
 [NO-DEFAULT-PACKAGES]
 \\usepackage[UTF8]{ctex}
@@ -407,17 +503,17 @@
 \\makeatother
 [EXTRA]
 "
-     ("\\section{%s}" . "\\section*{%s}")
-     ("\\subsection{%s}" . "\\subsection*{%s}")
-     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   ("\\section{%s}" . "\\section*{%s}")
+   ("\\subsection{%s}" . "\\subsection*{%s}")
+   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 
-  (add-to-list
-   'org-latex-classes
-   '("mybook"
-     "
+(add-to-list
+ 'org-latex-classes
+ '("mybook"
+   "
 \\documentclass{book}
 [NO-DEFAULT-PACKAGES]
 \\usepackage[UTF8]{ctex}
@@ -467,17 +563,17 @@
 \\makeatother
 [EXTRA]
 "
-     ("\\chapter{%s}" . "\\chapter*{%s}")
-     ("\\section{%s}" . "\\section*{%s}")
-     ("\\subsection{%s}" . "\\subsection*{%s}")
-     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   ("\\chapter{%s}" . "\\chapter*{%s}")
+   ("\\section{%s}" . "\\section*{%s}")
+   ("\\subsection{%s}" . "\\subsection*{%s}")
+   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (add-to-list
-   'org-latex-classes
-   '("mybeamer"
-     "
+(add-to-list
+ 'org-latex-classes
+ '("mybeamer"
+   "
 \\documentclass{beamer}
 [NO-DEFAULT-PACKAGES]
 % beamer set
@@ -521,39 +617,39 @@
 \\makeatother
 [EXTRA]
 "
-     ("\\section{%s}" . "\\section*{%s}")
-     ("\\subsection{%s}" . "\\subsection*{%s}")
-     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   ("\\section{%s}" . "\\section*{%s}")
+   ("\\subsection{%s}" . "\\subsection*{%s}")
+   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (setq org-latex-default-class "myart")
-  (setq org-latex-default-table-environment "longtable")
-  (setq org-export-with-smart-quotes t)
-  (setq org-latex-pdf-process
-        '(
-          "xelatex -interaction nonstopmode --shell-escape -output-directory %o %f"
-          "bibtex %b"
-          "xelatex -interaction nonstopmode --shell-escape -output-directory %o %f"
-          "xelatex -interaction nonstopmode --shell-escape -output-directory %o %f"
-          "rm -fr %b.out %b.log %b.tex %b.bbl _minted-* auto"))
-  (setq org-latex-listings-options
-        '(("numbers" "left")
-          ("breaklines" "true")
-          ("postbreak" "\\mbox{{$\\hookrightarrow$}\\space}")
-          ("frame" "shadowbox")
-          ("upquote" "true")
-          ("rulesepcolor" "\\color{red!20!green!20!blue!20}")
-          ;; ("backgroundcolor" "\\color[rgb]{1,1,0.76}")
-          ("backgroundcolor" "\\color[RGB]{245,245,244}")
-          ("keywordstyle" "\\bf\\color{blue}")
-          ("showstringspaces" "false")
-          ("basicstyle" "\\ttfamily")
-          ("identifierstyle" "\\bf")
-          ("numberstyle" "\\color[RGB]{0,192,192}")
-          ("commentstyle" "\\it\\color[RGB]{0,96,96}")
-          ("stringstyle" "\\ttfamily\\slshape\\color[RGB]{128,0,0}")))
-  (setq org-latex-listings t))
+(setq org-latex-default-class "myart")
+(setq org-latex-default-table-environment "longtable")
+(setq org-export-with-smart-quotes t)
+(setq org-latex-pdf-process
+      '(
+        "xelatex -interaction nonstopmode --shell-escape -output-directory %o %f"
+        "bibtex %b"
+        "xelatex -interaction nonstopmode --shell-escape -output-directory %o %f"
+        "xelatex -interaction nonstopmode --shell-escape -output-directory %o %f"
+        "rm -fr %b.out %b.log %b.tex %b.bbl _minted-* auto"))
+(setq org-latex-listings-options
+      '(("numbers" "left")
+        ("breaklines" "true")
+        ("postbreak" "\\mbox{{$\\hookrightarrow$}\\space}")
+        ("frame" "shadowbox")
+        ("upquote" "true")
+        ("rulesepcolor" "\\color{red!20!green!20!blue!20}")
+        ;; ("backgroundcolor" "\\color[rgb]{1,1,0.76}")
+        ("backgroundcolor" "\\color[RGB]{245,245,244}")
+        ("keywordstyle" "\\bf\\color{blue}")
+        ("showstringspaces" "false")
+        ("basicstyle" "\\ttfamily")
+        ("identifierstyle" "\\bf")
+        ("numberstyle" "\\color[RGB]{0,192,192}")
+        ("commentstyle" "\\it\\color[RGB]{0,96,96}")
+        ("stringstyle" "\\ttfamily\\slshape\\color[RGB]{128,0,0}")))
+(setq org-latex-listings t)
 
 (use-package deft
   :ensure t

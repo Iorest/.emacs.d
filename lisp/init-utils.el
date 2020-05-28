@@ -47,157 +47,6 @@
   (set-selection-coding-system (if *os-is-win* 'utf-16-le 'utf-8))
   (prefer-coding-system 'utf-8))
 
-(defun save-buffer-as-utf8 (coding-system)
-  "Revert a buffer with `CODING-SYSTEM' and save as UTF-8."
-  (interactive "zCoding system for visited file (default nil):")
-  (revert-buffer-with-coding-system coding-system)
-  (set-buffer-file-coding-system 'utf-8)
-  (save-buffer))
-
-(defun dos2unix ()
-  "Convert the current buffer to UNIX file format."
-  (interactive)
-  (set-buffer-file-coding-system 'undecided-unix nil))
-
-(defun unix2dos ()
-  "Convert the current buffer to DOS file format."
-  (interactive)
-  (set-buffer-file-coding-system 'undecided-dos nil))
-
-;; Revert buffer
-(defun revert-this-buffer ()
-  "Revert the current buffer."
-  (interactive)
-  (unless (minibuffer-window-active-p (selected-window))
-    (text-scale-increase 0)
-    (widen)
-    (if (and (fboundp 'fancy-narrow-active-p)
-             (fancy-narrow-active-p))
-        (fancy-widen))
-    (revert-buffer t t)
-    (message "Reverted this buffer.")))
-(bind-key "<f5>" #'revert-this-buffer)
-(if *os-is-mac*
-    (bind-key "s-r" #'revert-this-buffer))
-
-(defun upload-notes ()
-  "Update Org files to the latest version."
-  (interactive)
-  (let ((dir (expand-file-name "~/Org/Notes/")))
-    (if (file-exists-p dir)
-        (progn
-          (message "Upload Org Notes...")
-          (cd dir)
-          (shell-command "git add .")
-          (shell-command "git commit -m 'update note'")
-          (shell-command "git push origin master")
-          (message "Update finished."))
-      (message "Update error"))))
-
-;; Open custom file
-(defun open-custom-file()
-  "Open custom.el if exists, otherwise create it."
-  (interactive)
-  (let ((custom-example (expand-file-name "custom-example.el" user-emacs-directory)))
-    (if (not (file-exists-p custom-file))
-        (if (file-exists-p custom-example)
-            (copy-file custom-file)
-          (error "Unable to find custom-example.el")))
-    (find-file custom-file)))
-
-;; Create a new scratch buffer
-(defalias 'create-scratch-buffer 'crux-create-scratch-buffer)
-
-;;
-;; Network Proxy
-;;
-
-;;
-;; Network Proxy
-;;
-
-(defun proxy-http-show ()
-  "Show HTTP/HTTPS proxy."
-  (interactive)
-  (if url-proxy-services
-      (message "Current HTTP proxy is \"%s\"" iorest-proxy)
-    (message "No HTTP proxy")))
-
-
-
-(defun proxy-http-enable ()
-  "Enable HTTP/HTTPS proxy."
-  (interactive)
-  (setq url-proxy-services `(("http" . ,iorest-proxy)
-                             ("https" . ,iorest-proxy)
-                             ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
-  (proxy-http-show))
-
-(defun proxy-http-disable ()
-  "Disable HTTP/HTTPS proxy."
-  (interactive)
-  (setq url-proxy-services nil)
-  (proxy-http-show))
-
-(defun proxy-http-toggle ()
-  "Toggle HTTP/HTTPS proxy."
-  (interactive)
-  (if url-proxy-services
-      (proxy-http-disable)
-    (proxy-http-enable)))
-
-(defvar socks-noproxy)
-(defvar socks-server)
-(defun proxy-socks-show ()
-  "Show SOCKS proxy."
-  (interactive)
-  (if socks-noproxy
-      (message "Current SOCKS%d proxy is %s:%d"
-               (cadddr socks-server) (cadr socks-server) (caddr socks-server))
-    (message "No SOCKS proxy")))
-
-(defun proxy-socks-enable ()
-  "Enable SOCKS proxy."
-  (interactive)
-  (setq url-gateway-method 'socks)
-  (setq socks-noproxy '("localhost"))
-  (setq socks-server '("Default server" "127.0.0.1" 10800 5))
-  (proxy-socks-show))
-
-(defun proxy-socks-disable ()
-  "Disable SOCKS proxy."
-  (interactive)
-  (setq url-gateway-method 'native)
-  (setq socks-noproxy nil)
-  (proxy-socks-show))
-
-(defun proxy-socks-toggle ()
-  "Toggle SOCKS proxy."
-  (interactive)
-  (if socks-noproxy
-      (proxy-socks-disable)
-    (proxy-socks-enable)))
-
-(defun kill-back-to-indentation ()
-  "Kill from point back to the first non-whitespace character on the line."
-  (interactive)
-  (let ((prev-pos (point)))
-    (back-to-indentation)
-    (kill-region (point) prev-pos)))
-
-(defun kill-to-begin()
-  "Kill from point to begin of buffer."
-  (interactive)
-  (let ((prev-pos (point)))
-    (goto-char (point-min))
-    (delete-region (point) prev-pos)))
-
-(defun kill-to-end()
-  "Kill from point to end of buffer."
-  (interactive)
-  (let ((prev-pos (point)))
-    (goto-char (point-max))
-    (delete-region (point) prev-pos)))
 
 (defun iorest/indent-buffer ()
   "Indent the currently visited buffer."
@@ -205,20 +54,20 @@
   (indent-region (point-min) (point-max)))
 
 (defun iorest/align-to-colon (begin end)
-  "Align region to colon (:) signs"
+  "Align region to colon (:) signs."
   (interactive "r")
   (align-regexp begin end
                 (rx (group (zero-or-more (syntax whitespace))) ":") 1 1 ))
 
 (defun iorest/align-to-comma (begin end)
-  "Align region to comma signs"
+  "Align region to comma signs."
   (interactive "r")
   (align-regexp begin end
                 (rx "," (group (zero-or-more (syntax whitespace))) ) 1 1 ))
 
 
 (defun iorest/align-to-equals (begin end)
-  "Align region to equal signs"
+  "Align region to equal signs."
   (interactive "r")
   (align-regexp begin end
                 (rx (group (zero-or-more (syntax whitespace))) "=") 1 1 ))
@@ -249,7 +98,7 @@
         (message "Indented buffer.")))))
 
 (defun iorest/insert-date (format)
-  "Wrapper around format-time-string."
+  "Wrapper around `format-time-string`."
   (interactive "MFormat: ")
   (insert (format-time-string format)))
 
@@ -342,31 +191,6 @@
         (setq i (+ 1 i))))
     string))
 
-(setq kmacro-file (expand-file-name "kmacro.el" user-emacs-directory))
-(defun kmacro-save-macro (name)
-  "NAME and save macro to file."
-  (interactive "SName of the macro: ")
-  (kmacro-name-last-macro name)
-  (find-file kmacro-file)
-  (goto-char (point-max))
-  (newline)
-  (insert-kbd-macro name)
-  (newline)
-  (save-buffer)
-  (kill-buffer nil))
-
-(when (file-exists-p kmacro-file)
-  (load kmacro-file))
-
-
-(defun markdown-export-to-org ()
-  "Convert the current buffer's content from markdown to orgmode format and save it with the current buffer's file name but with .org extension."
-  (interactive)
-  (shell-command-on-region (point-min) (point-max)
-                           (format "pandoc -f markdown -t org |sed -E '/^[[:space:]]+:/ d'> %s"
-                                   (concat (file-name-sans-extension (buffer-file-name)) ".org")))
-  )
-
 (defun iorest/html-decode-percent-encoded-url ()
   "Decode percent encoded URI of URI under cursor or selection.
 
@@ -421,5 +245,189 @@ becomes
     (delete-region -p1 -p2)
     (insert (url-encode-url -input-str))))
 
+(setq kmacro-file (expand-file-name "kmacro.el" user-emacs-directory))
+(defun kmacro-save-macro (name)
+  "NAME and save macro to file."
+  (interactive "SName of the macro: ")
+  (kmacro-name-last-macro name)
+  (find-file kmacro-file)
+  (goto-char (point-max))
+  (newline)
+  (insert-kbd-macro name)
+  (newline)
+  (save-buffer)
+  (kill-buffer nil))
+
+(when (file-exists-p kmacro-file)
+  (load kmacro-file))
+
+
+(defun markdown-export-to-org ()
+  "Convert the current buffer's content from markdown to orgmode format and save it with the current buffer's file name but with .org extension."
+  (interactive)
+  (shell-command-on-region (point-min) (point-max)
+                           (format "pandoc -f markdown -t org |sed -E '/^[[:space:]]+:/ d'> %s"
+                                   (concat (file-name-sans-extension (buffer-file-name)) ".org")))
+  )
+
+(defun switch-to-scratch-buffer ()
+  "Toggle between *scratch* buffer and the current buffer.
+     If the *scratch* buffer does not exist, create it."
+  (interactive)
+  (let ((scratch-buffer-name  "*scratch*")
+        (prev-major-mode major-mode)
+        )
+    (if (equal (buffer-name (current-buffer)) scratch-buffer-name)
+        (switch-to-buffer (other-buffer))
+      (with-current-buffer
+          (switch-to-buffer  scratch-buffer-name)
+        (when (functionp prev-major-mode) (funcall prev-major-mode ))
+        (when (equal major-mode 'fundamental-mode )(emacs-lisp-mode))
+        (goto-char (point-max))))))
+
+(defun proxy-http-show ()
+  "Show HTTP/HTTPS proxy."
+  (interactive)
+  (if url-proxy-services
+      (message "Current HTTP proxy is \"%s\"" iorest-proxy)
+    (message "No HTTP proxy")))
+
+
+
+(defun proxy-http-enable ()
+  "Enable HTTP/HTTPS proxy."
+  (interactive)
+  (setq url-proxy-services `(("http" . ,iorest-proxy)
+                             ("https" . ,iorest-proxy)
+                             ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
+  (proxy-http-show))
+
+(defun proxy-http-disable ()
+  "Disable HTTP/HTTPS proxy."
+  (interactive)
+  (setq url-proxy-services nil)
+  (proxy-http-show))
+
+(defun proxy-http-toggle ()
+  "Toggle HTTP/HTTPS proxy."
+  (interactive)
+  (if url-proxy-services
+      (proxy-http-disable)
+    (proxy-http-enable)))
+
+(defvar socks-noproxy)
+(defvar socks-server)
+(defun proxy-socks-show ()
+  "Show SOCKS proxy."
+  (interactive)
+  (if socks-noproxy
+      (message "Current SOCKS%d proxy is %s:%d"
+               (cadddr socks-server) (cadr socks-server) (caddr socks-server))
+    (message "No SOCKS proxy")))
+
+(defun proxy-socks-enable ()
+  "Enable SOCKS proxy."
+  (interactive)
+  (setq url-gateway-method 'socks)
+  (setq socks-noproxy '("localhost"))
+  (setq socks-server '("Default server" "127.0.0.1" 10800 5))
+  (proxy-socks-show))
+
+(defun proxy-socks-disable ()
+  "Disable SOCKS proxy."
+  (interactive)
+  (setq url-gateway-method 'native)
+  (setq socks-noproxy nil)
+  (proxy-socks-show))
+
+(defun proxy-socks-toggle ()
+  "Toggle SOCKS proxy."
+  (interactive)
+  (if socks-noproxy
+      (proxy-socks-disable)
+    (proxy-socks-enable)))
+
+(defun kill-back-to-indentation ()
+  "Kill from point back to the first non-whitespace character on the line."
+  (interactive)
+  (let ((prev-pos (point)))
+    (back-to-indentation)
+    (kill-region (point) prev-pos)))
+
+(defun kill-to-begin()
+  "Kill from point to begin of buffer."
+  (interactive)
+  (let ((prev-pos (point)))
+    (goto-char (point-min))
+    (delete-region (point) prev-pos)))
+
+(defun kill-to-end()
+  "Kill from point to end of buffer."
+  (interactive)
+  (let ((prev-pos (point)))
+    (goto-char (point-max))
+    (delete-region (point) prev-pos)))
+
+(defun save-buffer-as-utf8 (coding-system)
+  "Revert a buffer with `CODING-SYSTEM' and save as UTF-8."
+  (interactive "zCoding system for visited file (default nil):")
+  (revert-buffer-with-coding-system coding-system)
+  (set-buffer-file-coding-system 'utf-8)
+  (save-buffer))
+
+(defun dos2unix ()
+  "Convert the current buffer to UNIX file format."
+  (interactive)
+  (set-buffer-file-coding-system 'undecided-unix nil))
+
+(defun unix2dos ()
+  "Convert the current buffer to DOS file format."
+  (interactive)
+  (set-buffer-file-coding-system 'undecided-dos nil))
+
+;; Revert buffer
+(defun revert-this-buffer ()
+  "Revert the current buffer."
+  (interactive)
+  (unless (minibuffer-window-active-p (selected-window))
+    (text-scale-increase 0)
+    (widen)
+    (if (and (fboundp 'fancy-narrow-active-p)
+             (fancy-narrow-active-p))
+        (fancy-widen))
+    (revert-buffer t t)
+    (message "Reverted this buffer.")))
+(bind-key "<f5>" #'revert-this-buffer)
+(if *os-is-mac*
+    (bind-key "s-r" #'revert-this-buffer))
+
+(defun upload-notes ()
+  "Update Org files to the latest version."
+  (interactive)
+  (let ((dir (expand-file-name "~/Org/Notes/")))
+    (if (file-exists-p dir)
+        (progn
+          (message "Upload Org Notes...")
+          (cd dir)
+          (shell-command "git add .")
+          (shell-command "git commit -m 'update note'")
+          (shell-command "git push origin master")
+          (message "Update finished."))
+      (message "Update error"))))
+
+;; Open custom file
+(defun open-custom-file()
+  "Open custom.el if exists, otherwise create it."
+  (interactive)
+  (let ((custom-example (expand-file-name "custom-example.el" user-emacs-directory)))
+    (if (not (file-exists-p custom-file))
+        (if (file-exists-p custom-example)
+            (copy-file custom-file)
+          (error "Unable to find custom-example.el")))
+    (find-file custom-file)))
+
+;; Create a new scratch buffer
+(defalias 'create-scratch-buffer 'crux-create-scratch-buffer)
+
 (provide 'init-utils)
-;;; init-utils.el ends here
+;;; init-utils.el ends here.
