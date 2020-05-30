@@ -376,12 +376,12 @@
         (*os-is-win* 12)))
 (defvar cn-font
   (cond (*os-is-gnu* "WenQuanYi Micro Hei Mono")
-        (*os-is-mac* "Microsoft Yahei")
+        (*os-is-mac* "微软雅黑")
         (*os-is-win* "Microsoft Yahei")))
 
 (defvar cn-font-size
   (cond (*os-is-gnu* 16)
-        (*os-is-mac* 16)
+        (*os-is-mac* 12)
         (*os-is-win* 16)))
 
 

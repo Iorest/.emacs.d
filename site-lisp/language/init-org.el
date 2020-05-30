@@ -422,9 +422,9 @@ prepended to the element after the #+HEADER: tag."
 
 (setq org-publish-project-alist
       '(("org-notes"
-         :base-directory "~/Org/Notes/"
+         :base-directory "~/Org/笔记/Org-Notes/"
          :base-extension "org"
-         :publishing-directory "~/Org/Publish/Notes/"
+         :publishing-directory "~/Org/导出/Notes/"
          :recursive t
          :publishing-function org-html-publish-to-html
                                         ;:auto-sitemap t
@@ -433,16 +433,16 @@ prepended to the element after the #+HEADER: tag."
                                         ;:sitemap-sort-folders last
          :headline-levels 4)
         ("org-static"
-         :base-directory "~/Org/Notes/"
+         :base-directory "~/Org/笔记/Org-Notes/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/Org/Publish/Notes/"
+         :publishing-directory "~/Org/导出/Notes/"
          :recursive t
          :publishing-function org-publish-attachment)
         ("org-site" :components ("org-notes" "org-static"))
         ("org-books"
-         :base-directory "~/Org/Notes/"
+         :base-directory "~/Org/笔记/Org-Notes/"
          :base-extension "org"
-         :publishing-directory "~/Org/Publish/Books/"
+         :publishing-directory "~/Org/导出/Books/"
          :recursive t
          :publishing-function org-latex-publish-to-pdf
          :headline-levels 4)))
@@ -674,4 +674,4 @@ prepended to the element after the #+HEADER: tag."
   (setq yankpad-file (expand-file-name "yankpad/yankpad.org" user-emacs-directory)))
 
 (provide 'init-org)
-;;; init-org.el ends here
+;;; init-org.el ends here.

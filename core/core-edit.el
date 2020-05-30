@@ -266,10 +266,12 @@
     "Grep for search org file."
     (interactive)
     (let ((counsel-ag-base-command
-           (concat "rg --with-filename --no-heading --line-number --color never --type org %s" (counsel--rg-targets)))
+           (concat "rg -M 240 --with-filename --no-heading --line-number --color never --type org %s"
+                    (mapconcat #'shell-quote-argument (counsel--rg-targets) " ")))
           (counsel--grep-tool-look-around
-           (let ((rg (car (split-string counsel-rg-base-command)))
-                 (switch "--pcre2"))
+         (let ((rg (car (if (listp counsel-rg-base-command) counsel-rg-base-command
+                          (split-string counsel-rg-base-command))))
+               (switch "--pcre2"))
              (and (eq 0 (call-process rg nil nil nil switch "--version"))
                   switch))))
       (counsel-ag initial-input "~/Org" extra-rg-args "Search Org:"
