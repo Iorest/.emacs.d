@@ -366,7 +366,10 @@
 
 (advice-add 'describe-function-1 :after #'iorest-advice-remove-button)
 
-(defvar en-font "Fira Code")
+(defvar en-font
+  (cond (*os-is-gnu* "Fira Code Renita")
+        (*os-is-mac* "Fira Code")
+        (*os-is-win* "Fira Code Renita")))
 (defvar en-font-size
   (cond (*os-is-gnu* 12)
         (*os-is-mac* 12)
