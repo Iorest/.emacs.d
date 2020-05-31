@@ -274,7 +274,7 @@
                (switch "--pcre2"))
              (and (eq 0 (call-process rg nil nil nil switch "--version"))
                   switch))))
-      (counsel-ag initial-input "~/Org" extra-rg-args "Search Org:"
+      (counsel-ag initial-input "~/Org/org-roam" extra-rg-args "Search Org:"
                   :caller 'counsel-org)))
 
 

@@ -10,7 +10,6 @@
 
 (use-package org
   :ensure t
-  :defer t
   :custom-face (org-ellipsis ((t (:foreground nil))))
   :preface
   (defun hot-expand (str &optional mod)
@@ -67,7 +66,6 @@ prepended to the element after the #+HEADER: tag."
             (insert "#+HEADERS: :results output :exports both :shebang \"#!/usr/bin/env perl\"\n")
             (hot-expand "<s" "perl")) "Perl tangled")
      ("<" self-insert-command "ins"))))
-  :hook (org-mode . turn-on-org-cdlatex)
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb)
          ("C-c c" . org-capture)
@@ -348,14 +346,59 @@ prepended to the element after the #+HEADER: tag."
   (use-package org-roam
     :ensure t
     :diminish
+    :init
+    (require 'org-roam-protocol)
     :hook (after-init . org-roam-mode)
-    :config (setq org-roam-directory "~/Org/org-roam/")
+    :custom
+    (org-roam-directory "~/Org/org-roam/")
+    (org-roam-graph-viewer "/usr/bin/open")
+    (org-roam-list-files-commands '(rg))
+    (org-roam-graph-executable "neato")
+    (org-roam-graph-extra-config '(("overlap" . "false")))
+    :config
+    (setq org-roam-ref-capture-templates
+          '(("r""ref"plain (function org-roam-capture--get-point)
+             "%?"
+             :(format "message" format-args)1e-name "websites/${slug}"
+             :head "#+TITLE: ${tit1e}
+#+ROAM_KEY: ${ref}
+- source:: ${ref}"
+             :unnarrowed t)))
+    (setq org-roam-capture-templates
+          '(("d" "default" plain (function org-roam--capture-get-point)
+             "%?"
+             :file-name "${slug}"
+             :head "#+TITLE:${tit1e}\n"
+             :unnarrowed t)))
     :bind (:map org-roam-mode-map
                 (("C-c n l" . org-roam)
                  ("C-c n f" . org-roam-find-file)
+                 ("C-c n b" . org-roam-switch-to-buffer)
                  ("C-c n g" . org-roam-graph))
                 :map org-mode-map
                 (("C-c n i" . org-roam-insert)))))
+
+(use-package org-roam-server
+  :ensure t
+  :config)
+
+(use-package company-org-roam
+  :ensure t
+  :config
+  (add-hook 'org-roam-mode-hook
+                (lambda () (local-push-company-backend 'company-org-roam))))
+
+(use-package deft
+  :ensure t
+  :defer t
+  :config
+  (setq deft-extensions '("org" "txt" "text" "md" "markdown")
+        deft-default-extension "org"
+        deft-use-filename-as-title t
+        deft-auto-save-interval 0
+        deft-recursive t
+        deft-directory "~/Org/org-roam/")
+  )
 
 ;;extend
 (use-package org-download
@@ -422,7 +465,7 @@ prepended to the element after the #+HEADER: tag."
 
 (setq org-publish-project-alist
       '(("org-notes"
-         :base-directory "~/Org/笔记/Org-Notes/"
+         :base-directory "~/Org/org-roam/"
          :base-extension "org"
          :publishing-directory "~/Org/导出/Notes/"
          :recursive t
@@ -433,14 +476,14 @@ prepended to the element after the #+HEADER: tag."
                                         ;:sitemap-sort-folders last
          :headline-levels 4)
         ("org-static"
-         :base-directory "~/Org/笔记/Org-Notes/"
+         :base-directory "~/Org/org-roam/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
          :publishing-directory "~/Org/导出/Notes/"
          :recursive t
          :publishing-function org-publish-attachment)
         ("org-site" :components ("org-notes" "org-static"))
         ("org-books"
-         :base-directory "~/Org/笔记/Org-Notes/"
+         :base-directory "~/Org/org-roam/"
          :base-extension "org"
          :publishing-directory "~/Org/导出/Books/"
          :recursive t
@@ -651,18 +694,6 @@ prepended to the element after the #+HEADER: tag."
         ("stringstyle" "\\ttfamily\\slshape\\color[RGB]{128,0,0}")))
 (setq org-latex-listings t)
 
-(use-package deft
-  :ensure t
-  :defer t
-  :config
-  (setq deft-extensions '("org" "txt" "text" "md" "markdown")
-        deft-default-extension "org"
-        deft-use-filename-as-title t
-        deft-auto-save-interval 0
-        deft-recursive t
-        deft-directory "~/Org/Notes")
-  )
-
 (use-package org-web-tools
   :ensure t
   :defer t)
@@ -674,4 +705,4 @@ prepended to the element after the #+HEADER: tag."
   (setq yankpad-file (expand-file-name "yankpad/yankpad.org" user-emacs-directory)))
 
 (provide 'init-org)
-;;; init-org.el ends here.
+;;; init-org.el ends here
