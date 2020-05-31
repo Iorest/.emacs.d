@@ -386,7 +386,7 @@ prepended to the element after the #+HEADER: tag."
   :ensure t
   :config
   (add-hook 'org-roam-mode-hook
-                (lambda () (local-push-company-backend 'company-org-roam))))
+            (lambda () (local-push-company-backend 'company-org-roam))))
 
 (use-package deft
   :ensure t
