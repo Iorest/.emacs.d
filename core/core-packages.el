@@ -133,7 +133,7 @@ Return the fastest package archive."
 (use-package pretty-hydra
   :ensure t
   :bind ("<f6>" . toggles-hydra/body)
-  :init
+  :config
   ;; Global toggles
   (with-no-warnings
     (pretty-hydra-define toggles-hydra (:title "Toggles"
