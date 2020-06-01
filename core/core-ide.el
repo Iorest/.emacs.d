@@ -185,7 +185,7 @@
                         (ibuffer-projectile-set-filter-groups)
                         (unless (eq ibuffer-sorting-mode 'alphabetic)
                           (ibuffer-do-sort-by-alphabetic)))))
-    :config 
+    :config
     (setq ibuffer-projectile-prefix "Project: "))
   ;; (projectile-update-mode-line)
   (let ((command
@@ -539,12 +539,11 @@
 (require 'init-latex)
 (require 'init-c)
 (require 'init-sh)
-(require 'init-org)
 (require 'init-web)
 (require 'init-verilog)
 (require 'init-prodigy)
 (require 'init-others)
-
+(require 'init-org)
 
 (use-package quickrun
   :ensure t

@@ -42,6 +42,8 @@
 (autoload 'fira-code-symbol-mode "init-ligature" "ligature support." t)
 ;; (require 'init-ligature)
 (require 'init-en-tools)
+(require 'awesome-pair)
+(global-set-key [S-return] #'awesome-pair-jump-out-pair-and-newline)
 ;; (require 'cal-china-x)
 ;; (cal-china-x-setup)
 (require 'init-elfeed)

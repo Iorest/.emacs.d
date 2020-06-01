@@ -76,3 +76,4 @@ site-lisp/package/
 /meghanada/
 /.lsp*
 /init-local.el
+.DS_Store
