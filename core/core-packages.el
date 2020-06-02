@@ -136,8 +136,9 @@ Return the fastest package archive."
   :config
   ;; Global toggles
   (with-no-warnings
-    (pretty-hydra-define toggles-hydra (:title "Toggles"
-                                               :color amaranth :quit-key "q")
+    (pretty-hydra-define toggles-hydra
+      (:title "Toggles"
+              :color amaranth :quit-key "q")
       ("Basic"
        (("n" (if (fboundp 'display-line-numbers-mode)
                  (display-line-numbers-mode (if display-line-numbers-mode -1 1))
@@ -192,6 +193,9 @@ Return the fastest package archive."
         ("p u" (iorest-set-package-archives 'tuna t)
          "tuna" :toggle (eq iorest-package-archives 'tuna) :exit t)
         ("p T" (iorest-test-package-archives) "speed test" :exit t))))))
+
+;; TODO some error in pretty-hydra that it need to require
+(require 'pretty-hydra)
 
 (use-package diminish
   :ensure t

@@ -88,8 +88,8 @@ prepended to the element after the #+HEADER: tag."
                               (make-variable-buffer-local 'show-paren-mode)
                               (setq show-paren-mode nil))))
   :config
-  (setq org-agenda-files '("~/Org/Agenda" "~/Org/Capture")
-        org-capture-files '("~/Org/Capture")
+  (setq org-agenda-files '("~/Org/org-roam" "~/Org/org-roam/Agenda" "~/Org/org-roam/Capture")
+        org-capture-files '("~/Org/org-roam/Capture")
         org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
           (sequence "TODO(t)" "STARTED(s)" "DOING(i)" "HOLD(h)" "|" "DONE(d!/!)" "CANCEL(c@/!)")
