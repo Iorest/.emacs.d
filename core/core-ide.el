@@ -80,6 +80,8 @@
   :ensure t
   :diminish flycheck-mode
   :hook (after-init . global-flycheck-mode)
+  :init
+  (setq-default flycheck-disabled-checkers '(python-mypy))
   :config
   (setq flycheck-indication-mode 'right-fringe)
   (setq flycheck-emacs-lisp-load-path 'inherit)
