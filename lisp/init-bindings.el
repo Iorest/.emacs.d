@@ -10,6 +10,10 @@
 (eval-when-compile
   (require 'init-utils))
 
+(bind-key "<f5>" #'revert-this-buffer)
+(if *os-is-mac*
+    (bind-key "s-r" #'revert-this-buffer))
+
 (defhydra hydra-mark
   (:columns 5  :idle 0)
   "Mark"

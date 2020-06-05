@@ -38,11 +38,22 @@
 (setq user-full-name "Iorest"
       user-mail-address "vincent.leaforest@gmail.com")
 
-(add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(defun update-load-path (&rest _)
+  "Update `load-path'."
+  (dolist (dir '("site-lisp" "lisp" "core"))
+    (push (expand-file-name dir user-emacs-directory) load-path)))
 
-(require 'init-custom)
-(require 'cl)
+(defun add-subdirs-to-load-path (&rest _)
+  "Add subdirectories to `load-path'."
+  (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(advice-add #'package-initialize :after #'update-load-path)
+(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+(update-load-path)
+(add-subdirs-to-load-path)
+
+(require 'init-utils)
 (require 'core-packages)
 (require 'init-time)
 (require 'server)
@@ -61,7 +72,6 @@
       (my-server-shunt))
   (server-start))
 
-(require 'init-utils)
 (require 'init-bindings)
 (require 'core-ide)
 (require 'core-ui)

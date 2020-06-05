@@ -27,6 +27,15 @@
           (const :tag "eglot" 'eglot)
           nil))
 
+(when (or window-system (iorest/locale-is-utf8-p))
+  (set-language-environment 'utf-8)
+  (setq locale-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-selection-coding-system (if *os-is-win* 'utf-16-le 'utf-8))
+  (prefer-coding-system 'utf-8))
+
+
 ;; Emacs Lisp Package Archive (ELPA)
 ;; @see https://github.com/melpa/melpa and https://elpa.emacs-china.org/.
 (defcustom iorest-package-archives-alist

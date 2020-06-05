@@ -12,19 +12,69 @@
   (require 'init-custom)
   (require 'cl))
 
-(defun iorest/add-subdirs-to-load-path (parent-dir)
-  "Add every non-hidden subdir of PARENT-DIR to `load-path'."
-  (let* ((default-directory parent-dir))
-    (progn
-      (setq load-path
-            (append
-             (remove-if-not
-              (lambda (dir) (file-directory-p dir))
-              (directory-files (expand-file-name parent-dir) t "^[^\\.]"))
-             load-path)))))
+;; Package
+(defun set-package-archives (archives &optional refresh async no-save)
+  "Set the package archives (ELPA).
+REFRESH is non-nil, will refresh archive contents.
+ASYNC specifies whether to perform the downloads in the background.
+Save to `custom-file' if NO-SAVE is nil."
+  (interactive
+   (list
+    (intern (completing-read "Select package archives: "
+                             (mapcar #'car iorest-package-archives-alist)))))
+  ;; Set option
+  (set-variable 'iorest-package-archives archives no-save)
 
-(iorest/add-subdirs-to-load-path
- (expand-file-name "site-lisp/" user-emacs-directory))
+  ;; Refresh if need
+  (and refresh (package-refresh-contents async))
+
+  (message "Set package archives to `%s'" archives))
+(defalias 'iorest-set-package-archives #'set-package-archives)
+
+;; Refer to https://emacs-china.org/t/elpa/11192
+(defun iorest-test-package-archives (&optional no-chart)
+  "Test connection speed of all package archives and display on chart.
+Not displaying the chart if NO-CHART is non-nil.
+Return the fastest package archive."
+  (interactive)
+
+  (let* ((urls (mapcar
+                (lambda (url)
+                  (concat url "archive-contents"))
+                (mapcar #'cdr
+                        (mapcar #'cadr
+                                (mapcar #'cdr
+                                        iorest-package-archives-alist)))))
+         (durations (mapcar
+                     (lambda (url)
+                       (let ((start (current-time)))
+                         (message "Fetching %s..." url)
+                         (cond ((executable-find "curl")
+                                (call-process "curl" nil nil nil "--max-time" "10" url))
+                               ((executable-find "wget")
+                                (call-process "wget" nil nil nil "--timeout=10" url))
+                               (t (user-error "curl or wget is not found")))
+                         (float-time (time-subtract (current-time) start))))
+                     urls))
+         (fastest (car (nth (cl-position (apply #'min durations) durations)
+                            iorest-package-archives-alist))))
+
+    ;; Display on chart
+    (when (and (not no-chart)
+               (require 'chart nil t)
+               (require 'url nil t))
+      (chart-bar-quickie
+       'horizontal
+       "Speed test for the ELPA mirrors"
+       (mapcar (lambda (url) (url-host (url-generic-parse-url url))) urls) "ELPA"
+       (mapcar (lambda (d) (* 1e3 d)) durations) "ms"))
+
+    (message "%s" urls)
+    (message "%s" durations)
+    (message "%s is the fastest package archive" fastest)
+
+    ;; Return the fastest
+    fastest))
 
 ;; coding system
 
@@ -38,15 +88,6 @@
       (iorest/utf8-locale-p (getenv "LC_ALL"))
       (iorest/utf8-locale-p (getenv "LC_CTYPE"))
       (iorest/utf8-locale-p (getenv "LANG"))))
-
-(when (or window-system (iorest/locale-is-utf8-p))
-  (set-language-environment 'utf-8)
-  (setq locale-coding-system 'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-selection-coding-system (if *os-is-win* 'utf-16-le 'utf-8))
-  (prefer-coding-system 'utf-8))
-
 
 (defun iorest/indent-buffer ()
   "Indent the currently visited buffer."
@@ -138,10 +179,10 @@
   (interactive "*r")
   (let ((all (mapcar
               (lambda (w) (if (string-match "\\w" w)
-                         ;; Randomize words,
-                         (cons (random) w)
-                       ;; keep everything else in order.
-                       (cons -1 w)))
+                              ;; Randomize words,
+                              (cons (random) w)
+                            ;; keep everything else in order.
+                            (cons -1 w)))
               (split-string
                (delete-and-extract-region beg end) "\\b")))
         words sorted)
@@ -397,9 +438,6 @@ becomes
         (fancy-widen))
     (revert-buffer t t)
     (message "Reverted this buffer.")))
-(bind-key "<f5>" #'revert-this-buffer)
-(if *os-is-mac*
-    (bind-key "s-r" #'revert-this-buffer))
 
 (defun upload-notes ()
   "Update Org files to the latest version."
