@@ -132,17 +132,17 @@ prepended to the element after the #+HEADER: tag."
           ))
 
   (setq org-capture-templates
-        `(("t" "Todo" entry (file+headline "~/Org/Capture/gtd.org" "Tasks")
+        `(("t" "Todo" entry (file+headline "~/Org/org-roam/Capture/gtd.org" "Tasks")
            "* TODO [#B] %?\n%U\n"
            :clock-resume t
            :empty-lines 1)
-          ("n" "Note" entry (file "~/Org/Capture/note.org")
+          ("n" "Note" entry (file "~/Org/org-roam/Capture/note.org")
            "* %? :NOTE:\n%U\n%a\n"
            :clock-resume t
            :empty-lines 1)
-          ("s" "Code Snippet" entry (file "~/Org/Capture/snippet.org")
+          ("s" "Code Snippet" entry (file "~/Org/org-roam/Capture/snippet.org")
            "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
-          ("j" "Journal" entry (file+datetree "~/Org/Capture/journal.org")
+          ("j" "Journal" entry (file+datetree "~/Org/org-roam/Capture/journal.org")
            "* %?"
            :empty-lines 1)
           ))
