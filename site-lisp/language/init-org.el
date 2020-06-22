@@ -70,6 +70,7 @@ prepended to the element after the #+HEADER: tag."
          ("C-c b" . org-switchb)
          ("C-c c" . org-capture)
          ("C-c l" . org-store-link)
+         ("C-c i" . org-hydra/body)
          :map org-mode-map
          ("<" . (lambda ()
                   "Insert org template."
@@ -354,6 +355,7 @@ prepended to the element after the #+HEADER: tag."
     (org-roam-graph-viewer "/usr/bin/open")
     (org-roam-list-files-commands '(rg))
     (org-roam-graph-executable "neato")
+    (org-roam-tag-sources '(prop last-directory))
     (org-roam-graph-extra-config '(("overlap" . "false")))
     :config
     (setq org-roam-ref-capture-templates
@@ -400,6 +402,23 @@ prepended to the element after the #+HEADER: tag."
         deft-directory "~/Org/org-roam/")
   )
 
+;; (use-package org-ref
+;;   :ensure t
+;;   :config
+;;   (setq org-ref-bibliography-notes "~/Org/org-roam/Academic/Bib/notes.org"
+;;         org-ref-default-bibliography '("~/Org/org-roam/Academic/Bib/mybib.bib")
+;;         org-ref-pdf-directory "~/Org/org-roam/Academic/Bib/Pdfs/")
+;;   )
+
+
+(use-package citeproc
+  :ensure t)
+
+;;; A bug
+;; (use-package citeproc-org
+;;   :ensure t
+;;   :config)
+
 ;;extend
 (use-package org-download
   :ensure t
@@ -436,7 +455,7 @@ prepended to the element after the #+HEADER: tag."
   (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex") (variable . "CJKmainfont:WenQuanYi Micro Hei")))
   (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "xelatex") (variable . "CJKmainfont:WenQuanYi Micro Hei")))
   (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
-  (setq org-pandoc-options-for-revealjs '((variable . "revealjs-url:https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/")))
+  (setq org-pandoc-options-for-revealjs '((variable . "revealjs-url:https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.0.2/")))
   (setq org-pandoc-options-for-slideous '((variable . "slideous-url:http://goessner.net/download/prj/slideous/")))
   (setq org-pandoc-options-for-slidy '((variable . "slidy-url:http://www.w3.org/Talks/Tools/Slidy2/"))))
 
@@ -446,7 +465,7 @@ prepended to the element after the #+HEADER: tag."
     :ensure t
     :after ox
     :config
-    (setq org-reveal-root "https://cdn.bootcss.com/reveal.js/3.8.0/")))
+    (setq org-reveal-root "https://cdn.bootcss.com/reveal.js/4.0.2/")))
 
 (require 'ox-publish)
 (org-link-set-parameters
@@ -467,7 +486,7 @@ prepended to the element after the #+HEADER: tag."
       '(("org-notes"
          :base-directory "~/Org/org-roam/"
          :base-extension "org"
-         :publishing-directory "~/Org/导出/Notes/"
+         :publishing-directory "~/Org/Exports/Notes/"
          :recursive t
          :publishing-function org-html-publish-to-html
                                         ;:auto-sitemap t
@@ -478,14 +497,14 @@ prepended to the element after the #+HEADER: tag."
         ("org-static"
          :base-directory "~/Org/org-roam/"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/Org/导出/Notes/"
+         :publishing-directory "~/Org/Exports/Notes/"
          :recursive t
          :publishing-function org-publish-attachment)
         ("org-site" :components ("org-notes" "org-static"))
         ("org-books"
          :base-directory "~/Org/org-roam/"
          :base-extension "org"
-         :publishing-directory "~/Org/导出/Books/"
+         :publishing-directory "~/Org/Exports/Books/"
          :recursive t
          :publishing-function org-latex-publish-to-pdf
          :headline-levels 4)))

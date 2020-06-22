@@ -27,12 +27,12 @@
   (setq TeX-source-correlate-start-server t)
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-method 'synctex)
-  (setq TeX-tree-roots '("/var/lib/miktex-texmf/"
-                         "/var/cache/miktex-texmf/"
-                         "/usr/local/share/miktex-texmf/"
-                         "~/.miktex/texmfs/config/"
-                         "~/.miktex/texmfs/data/"
-                         "~/.miktex/texmfs/install/"))
+  ;; (setq TeX-tree-roots '("/var/lib/miktex-texmf/"
+  ;;                        "/var/cache/miktex-texmf/"
+  ;;                        "/usr/local/share/miktex-texmf/"
+  ;;                        "~/.miktex/texmfs/config/"
+  ;;                        "~/.miktex/texmfs/data/"
+  ;;                        "~/.miktex/texmfs/install/"))
   (cond
    (*os-is-win*
     (add-to-list 'TeX-view-program-selection '(output-pdf "SumatraPDF")))
@@ -56,8 +56,11 @@
   :ensure t
   :defer t
   :hook (latex-mode . reftex-mode)
+  :bind
+  (:map reftex-mode-map
+        ("C-c (" . reftex-citation))
   :config
-  (setq reftex-default-bibliography '("~/Org/Academic/Bib/mybib.bib"))
+  (setq reftex-default-bibliography '("~/Org/org-roam/Academic/Bib/mybib.bib"))
   (setq reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource"))
 
   (setq reftex-cite-format
