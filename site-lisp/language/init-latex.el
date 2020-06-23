@@ -22,24 +22,32 @@
   (TeX-fold-mode 1)
   (setq-default TeX-master t)
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex --synctex=1%(mode)%' %t" TeX-run-TeX nil t))
+  (setq TeX-command-extra-options "-file-line-error -shell-escape")
   (add-hook 'LaTeX-mode-hook
             (lambda ()   (setq TeX-command-default "XeLaTeX")))
+  (setq TeX-source-correlate-method 'synctex)
   (setq TeX-source-correlate-start-server t)
   (setq TeX-source-correlate-mode t)
-  (setq TeX-source-correlate-method 'synctex)
   ;; (setq TeX-tree-roots '("/var/lib/miktex-texmf/"
   ;;                        "/var/cache/miktex-texmf/"
   ;;                        "/usr/local/share/miktex-texmf/"
   ;;                        "~/.miktex/texmfs/config/"
   ;;                        "~/.miktex/texmfs/data/"
   ;;                        "~/.miktex/texmfs/install/"))
+
+  (setq TeX-tree-roots '("/usr/local/texlive/texmf-local"))
+
+  (add-to-list 'TeX-view-program-selection '(output-pdf "pdf-tools"))
   (cond
    (*os-is-win*
     (add-to-list 'TeX-view-program-selection '(output-pdf "SumatraPDF")))
+   (*os-is-mac*
+    (add-to-list 'TeX-view-program-selection '(output-pdf "Skim")))
    (*os-is-gnu*
     (add-to-list 'TeX-view-program-selection '(output-pdf "Atril"))))
-  (add-to-list 'TeX-view-program-selection '(output-pdf "pdf-tools"))
-  (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
+  (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")
+                                ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))
+        )
   (use-package company-auctex
     :ensure t
     :init
@@ -64,29 +72,29 @@
   (setq reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource"))
 
   (setq reftex-cite-format
-      '(
-        (?\C-m . "\\cite[]{%l}")
-        (?t . "\\textcite{%l}")
-        (?a . "\\autocite[]{%l}")
-        (?p . "\\parencite{%l}")
-        (?f . "\\footcite[][]{%l}")
-        (?F . "\\fullcite[]{%l}")
-        (?x . "[]{%l}")
-        (?X . "{%l}")
-        ))
+        '(
+          (?\C-m . "\\cite[]{%l}")
+          (?t . "\\textcite{%l}")
+          (?a . "\\autocite[]{%l}")
+          (?p . "\\parencite{%l}")
+          (?f . "\\footcite[][]{%l}")
+          (?F . "\\fullcite[]{%l}")
+          (?x . "[]{%l}")
+          (?X . "{%l}")
+          ))
 
-(setq font-latex-match-reference-keywords
-      '(("cite" "[{")
-        ("cites" "[{}]")
-        ("autocite" "[{")
-        ("footcite" "[{")
-        ("footcites" "[{")
-        ("parencite" "[{")
-        ("textcite" "[{")
-        ("fullcite" "[{")
-        ("citetitle" "[{")
-        ("citetitles" "[{")
-        ("headlessfullcite" "[{")))
+  (setq font-latex-match-reference-keywords
+        '(("cite" "[{")
+          ("cites" "[{}]")
+          ("autocite" "[{")
+          ("footcite" "[{")
+          ("footcites" "[{")
+          ("parencite" "[{")
+          ("textcite" "[{")
+          ("fullcite" "[{")
+          ("citetitle" "[{")
+          ("citetitles" "[{")
+          ("headlessfullcite" "[{")))
   (setq reftex-enable-partial-scans t)
   (setq reftex-save-parse-info t)
   (setq reftex-use-multiple-selection-buffers t)
@@ -107,7 +115,7 @@
     :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
     :magic ("%PDF" . pdf-view-mode)
     :bind (:map pdf-view-mode-map
-           ("C-s" . isearch-forward))
+                ("C-s" . isearch-forward))
     :init (setq pdf-annot-activate-created-annotations t)
     :config
     ;; WORKAROUND: Fix compilation errors on macOS.
