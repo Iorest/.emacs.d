@@ -69,7 +69,7 @@
                 :value-type (alist :key-type (string :tag "Archive name")
                                    :value-type (string :tag "URL or directory name"))))
 
-(defcustom iorest-package-archives 'melpa
+(defcustom iorest-package-archives 'ustc
   "Set package archives from which to fetch."
   :group 'iorest
   :set (lambda (symbol value)
