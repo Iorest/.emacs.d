@@ -57,9 +57,10 @@
 
 (use-package general
   :ensure t
-  :after evil
-  :config
+  ;; :after evil
+  :init
   (general-evil-setup t)
+  :config
   (general-define-key
    :states '(normal visual)
    :prefix "SPC"
